@@ -6,8 +6,8 @@
 		"生活随笔"    : "posts/life",
 		"关于我"      : "posts/about"
 	},
-	"perpage"     : 10,
-	"template"    : "pithiness", // default、slate、tactile、phase、pithiness、greyshade
+	"perpage"     : 5,
+	"template"    : "greyshade", // default、slate、tactile、phase、pithiness、greyshade
 	"types"       : {
 		"\\.(md||markdown)$"   : "markdown",
 		"\\.(js||css||json)$"  : "code",
