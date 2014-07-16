@@ -2,6 +2,7 @@
 	"docs"        : {
 		"CSS"         : "posts/css",
 		"HTML"        : "posts/html",
+		"JavaScript"  : "posts/js",
 		"生活随笔"    : "posts/life",
 		"关于我"      : "posts/about"
 	},
