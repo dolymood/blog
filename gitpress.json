@@ -15,7 +15,6 @@
 	},
 	"title"       : "blog",
 	"comment"     : {"type": "duoshuo", "short_name": "dolymood"},
-	"domain-alias": [""],
 	"friends"  : [
 		{
 		"name" : "github dolymood",
