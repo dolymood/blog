@@ -1,0 +1,26 @@
+{
+	"docs"        : {
+		"CSS"         : "posts/css",
+		"HTML"        : "posts/html",
+		"生活随笔"    : "posts/life",
+		"关于我"      : "posts/about"
+	},
+	"perpage"     : 10,
+	"template"    : "greyshade", // default、slate、tactile、phase、pithiness、greyshade
+	"types"       : {
+		"\\.(md||markdown)$"   : "markdown",
+		"\\.(js||css||json)$"  : "code",
+		"\\.html?$"            : "html",
+		".*"                   : "text"
+	},
+	"title"       : "blog",
+	"comment"     : {"type": "duoshuo", "short_name": "dolymood"},
+	"domain-alias": [""],
+	"friends"  : [
+		{
+		"name" : "github dolymood",
+		"title": "dolymood github",
+		"url"  : "https://github.com/dolymood"
+		}
+	]
+}
