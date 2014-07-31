@@ -16,7 +16,7 @@
 	},
 	"title"       : "blog",
 	"comment"     : {"type": "duoshuo", "short_name": "dolymood"},
-	"domain-alias": ["aijc.net","www.aijc.net"],
+	"domain-alias": ["blog.aijc.net", "www.aijc.net", "aijc.net"],
 	"friends"  : [
 		{
 		"name" : "github dolymood",
