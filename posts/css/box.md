@@ -115,37 +115,37 @@ margin的值可以是负值，但是可能会有特定于具体实现上的一�
 
 * __'margin-top', 'margin-bottom'__
 
-	_值：_<margin值> 或者 inherit
+	_值：_ <margin值> 或者 inherit
 
-	_初始化：_0
+	_初始化：_ 0
 
-	_应用在：_除了display类型是table, table-caption以及inline-table之外的一切元素
+	_应用在：_ 除了display类型是table, table-caption以及inline-table之外的一切元素
 
-	_可继承：_不可以
+	_可继承：_ 不可以
 
-	_百分比：_相对于包含块的宽度
+	_百分比：_ 相对于包含块的宽度
 
-	_媒介：_可见媒介
+	_媒介：_ 可见媒介
 
-	_计算值：_特殊的百分比或者绝对的值
+	_计算值：_ 特殊的百分比或者绝对的值
 
 _这两个在非替代行内元素上无效_
 
 * __'margin-right', 'margin-left'__
 
-	_值：_<margin值> 或者 inherit
+	_值：_ <margin值> 或者 inherit
 
-	_初始化：_0
+	_初始化：_ 0
 
-	_应用在：_除了display类型是table, table-caption以及inline-table之外的一切元素
+	_应用在：_ 除了display类型是table, table-caption以及inline-table之外的一切元素
 
-	_可继承：_不可以
+	_可继承：_ 不可以
 
-	_百分比：_相对于包含块的宽度
+	_百分比：_ 相对于包含块的宽度
 
-	_媒介：_可见媒介
+	_媒介：_ 可见媒介
 
-	_计算值：_特殊的百分比或者绝对的值
+	_计算值：_ 特殊的百分比或者绝对的值
 
 这些属性设置一个盒子的top, right, bottom, left的margin。
 
@@ -156,19 +156,19 @@ h1 {margin-top:2em}
 
 * __'margin'
 
-	_值：_<margin值>{1,4}（1到4个） 或者 inherit
+	_值：_ <margin值>{1,4}（1到4个） 或者 inherit
 
-	_初始化：_参见单独的属性
+	_初始化：_ 参见单独的属性
 
-	_应用在：_除了display类型是table, table-caption以及inline-table之外的一切元素
+	_应用在：_ 除了display类型是table, table-caption以及inline-table之外的一切元素
 
-	_可继承：_不可以
+	_可继承：_ 不可以
 
-	_百分比：_相对于包含块的宽度
+	_百分比：_ 相对于包含块的宽度
 
-	_媒介：_可见媒介
+	_媒介：_ 可见媒介
 
-	_计算值：_参见单独的属性
+	_计算值：_ 参见单独的属性
 
 margin属性是'margin-top', 'margin-right', 'margin-bottom', 'margin-left'的简写形式。
 
