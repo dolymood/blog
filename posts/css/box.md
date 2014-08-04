@@ -154,7 +154,7 @@ h1 {margin-top:2em}
 ```
 
 
-* __'margin'
+* _'margin'_
 
 	_值：_ <margin值>{1,4}（1到4个） 或者 inherit
 
