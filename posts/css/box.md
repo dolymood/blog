@@ -83,15 +83,15 @@ margin, border和padding可以被拆分为top, right, bottom 和 left 部分。
 
 注意的是：
 
-> 每一个li盒子的content width是上下计算的；每一个li的包含块是由ul元素确定的。
+* 每一个li盒子的content width是上下计算的；每一个li的包含块是由ul元素确定的。
 
-> 每一个li盒子的magin box的高取决于他的content height加上上下padding, borders和margins。注意每一个li盒子之间的垂直margins是折叠collapse的（也就是常说的外边距折叠）。
+* 每一个li盒子的magin box的高取决于他的content height加上上下padding, borders和margins。注意每一个li盒子之间的垂直margins是折叠collapse的（也就是常说的外边距折叠）。
 
-> 每一个li盒子的右padding被设置为了0,。效果可见图上的的下图。
+* 每一个li盒子的右padding被设置为了0,。效果可见图上的的下图。
 
-> 每一个li盒子的magins是透明的——margin背景往往是透明的——因此ul的padding和content区域的背景色（黄色）通过了他们。
+* 每一个li盒子的magins是透明的——margin背景往往是透明的——因此ul的padding和content区域的背景色（黄色）通过了他们。
 
-> 第2个li元素指定了一个dashed效果的border。
+* 第2个li元素指定了一个dashed效果的border。
 
 ### Margin属性：'margin-top', 'margin-right', 'margin-bottom', 'margin-left'和'margin'
 
