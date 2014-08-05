@@ -332,7 +332,7 @@ img { display: none }      /* Do not display images */
 
 * __<百分比percentage>__
 	
-	偏移的值死相对于包含块的宽或者高计算的。负值也是可以的。
+	偏移的值是相对于包含块的宽或者高计算的。负值也是可以的。
 
 * __auto__
 	
