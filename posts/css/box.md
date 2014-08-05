@@ -6,11 +6,11 @@ CSS盒模型描述了在文档树中的元素通过‘可视化格式模型’�
 
 每一个盒子都有一个内容区域（content area）和周围的可选的内边距（padding），边框（border） 和外边距（margin areas）；每一个区域的大小按照下边的属性指定。下边的图标展示了这些区域之间的关系以及margin，border以及padding所用到的术语：
 
-<!--more-->
-
 _PS：为了方便，后边这几个词的均以英文代替中文_
 
 ![content padding borders和margins之间的关系](http://www.w3.org/TR/CSS21/images/boxdim.png)
+
+<!--more-->
 
 margin, border和padding可以被拆分为top, right, bottom 和 left 部分。
 
