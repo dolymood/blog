@@ -839,8 +839,7 @@ _PS: 这里加上一个来自[w3help](http://www.w3help.org/zh-cn/kb/009/)的流
 | 设定值 | 计算值 |
 | ------ | ------ |
 | inline-table | table |
-| inline, run-in, table-row-group, table-column, table-column-group, table-header-group, 
-table-footer-group, table-row, table-cell, table-caption, inline-block | block |
+| inline,run-in,table-row-group,table-column,table-column-group,table-header-group,table-footer-group,table-row,table-cell,table-caption,inline-block | block |
 | 其他 | 同设定值 |
 
 ### 普通流、浮动和绝对定位的对比（比较）
