@@ -209,7 +209,7 @@ body {
 
 * 他们必须在同一个块级格式化上下文（BFC）中，并且是在普通流中的块级盒子。
 
-* 没有线盒（line boxes）、没有间隙（clearance）、没有padding并且没border分开他们（_注意：具有0高度的线盒是被忽略的_）。
+* 没有行盒（line boxes）、没有间隙（clearance）、没有padding并且没border分开他们（_注意：具有0高度的行盒是被忽略的_）。
 
 * 他们都属于垂直相邻的盒边界，下面的几种形式中的一种：
 
@@ -631,8 +631,8 @@ _在上边的示例中，左border的颜色会是黑色的，其他边的颜色�
 
 ### 在不同方向（双向）的上下文中的行内元素的盒模型
 
-对于每一个线盒（line box）来说，用户代理必须以视觉顺序（而不是逻辑顺序）为每一个元素生成行内盒（inline boxes），并且去渲染margin，border以及padding。
+对于每一个行盒（line box）来说，用户代理必须以视觉顺序（而不是逻辑顺序）为每一个元素生成行内盒（inline boxes），并且去渲染margin，border以及padding。
 
-当这个元素的direction属性值是ltr的时候，生成的的盒子的最左边就是第一个线盒中的元素的left margin，left border以及left padding，并且生成的盒子最右边就是最后一个线盒中的元素的right margin，right border以及right padding。
+当这个元素的direction属性值是ltr的时候，生成的的盒子的最左边就是第一个行盒中的元素的left margin，left border以及left padding，并且生成的盒子最右边就是最后一个行盒中的元素的right margin，right border以及right padding。
 
-当这个元素的direction属性值是rtl的时候，生成的盒子最右边就是第一个线盒中的元素的right margin，right border以及right padding，并且生成的的盒子的最左边就是最后一个线盒中元素的left margin，left border以及left padding。
+当这个元素的direction属性值是rtl的时候，生成的盒子最右边就是第一个行盒中的元素的right margin，right border以及right padding，并且生成的的盒子的最左边就是最后一个行盒中元素的left margin，left border以及left padding。
