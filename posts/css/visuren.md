@@ -100,7 +100,7 @@ _这个P元素包含着一个在一个块级元素之前的匿名文本区块C1�
 
 匿名块盒在计算相对于他的百分比的值的时候会被忽略掉：利用最近的非匿名的父级（祖先）框替换。例如，上边的例子中，如果在DIV内的匿名块盒的孩子需要知道他的包含块的高height去计算一个百分比的高的话，那么他就会使用由DIV格式化出的包含块的高而不是匿名块盒的。
 
-#### 行内级元素和行内盒
+#### 行内级元素和行盒
 
 行内级元素就是在源文档中的那些不会形成新的内容块的元素；内容成行分布。这些display的属性会使得一个元素行内级：'inline', 'inline-table', 和 'inline-block'。行内级元素生成行内级盒（inline-level boxes），这些盒子在一个行内格式化上下文中（IFC）。
 
@@ -352,10 +352,127 @@ img { display: none }      /* Do not display images */
 
 #### IFC 行内格式化上下文
 
-在一个IFC中，盒是从其包含块的顶部一个挨着另一个在水平方向上布局的。在这些盒的水平方向上的margin、border以及padding都是有效的。盒可以通过几种不同的方式在垂直方向上对齐：他们的top或者bottom对齐或者他们里边的文本的baseline（基线）对齐。包含着盒的矩形区域，会形成一条线，称作线盒。
+在一个IFC中，盒是从其包含块的顶部一个挨着另一个在水平方向上布局的。在这些盒的水平方向上的margin、border以及padding都是有效的。盒可以通过几种不同的方式在垂直方向上对齐：他们的top或者bottom对齐或者他们里边的文本的baseline（基线）对齐。包含着盒的矩形区域，会形成一条线，称作行盒。
 
-一个线盒的宽是由包含块和浮动出现决定的。一个线盒的高是由在‘行高计算’段落中的规则决定的。
+一个行盒的宽是由包含块和浮动的出现决定的。一个行盒的高是由在‘行高计算’段落中的规则决定的。
 
-一个线盒的高往往对于其包含的所有盒是足够的。然而，他可能要比他包含的内容中的最高的盒的高还要高（例如以基线对齐的盒）。当一个盒B的高比包含着他的线盒的高要低的时候，线盒中的B的垂直对齐就由vertical-align这个属性决定。当多个行级盒在水平方向上无法放在一个单独的线盒中时，他们就会被分配在两个或者多个垂直堆叠的行盒中。因此，一个段落就是行盒在垂直方向上堆叠形成的。行框是不会存在垂直方向上的分割（除非其他地方规定了）和重叠的。
+一个行盒的高往往对于其包含的全部盒都是足够的。然而，他可能要比他包含的内容中的最高的盒的高还要高（例如以基线对齐的盒）。当一个盒B的高比包含着他的行盒的高要低的时候，行盒中的B的垂直对齐就由vertical-align这个属性决定。当多个行级盒在水平方向上无法放在一个单独的行盒中时，他们就会被分配在两个或者多个垂直堆叠的行盒中。因此，一个段落就是行盒在垂直方向上堆叠形成的。行框是不会存在垂直方向上的分割（除非其他地方规定了）和重叠的。
 
+一般来说，一个行盒的左边界会和其包含块的左边挨着并且右边界会和其包含块的右边界挨着。然而，浮动盒可能处在包含块边缘和行盒边缘之间。因此，尽管一般情况下在相同的IFC中的的行盒都是一样宽的（包含块的宽），但是他们可能会因浮动存在缩短了可用宽度，也就是在宽度上发生了变化。在同一个IFC中的行盒的高往往都是不一样的（例如，一行包含着图片，而其他的包含的只有文本内容）。
+
+当一行中的行内级盒的总宽小于包含着他们的行盒的宽的时候，他们在行盒中水平方向的对齐主要取决于text-align这个属性。如果属性的值是justify的话，用户代理也可以拉伸行内盒（inline-table和inline-block盒除外）中的空间和文字。
+
+当一个行内盒超出了他的行盒的宽的时候，他就会被分成几个盒，这几个盒会分布到几个行盒内。如果一个行内盒不能被分割（例如，行内盒只包含单个字符，或者语言特殊的断字规则不允许在行内盒里换行，或者行内盒受到带有nowrap或pre值的white-space属性的影响），那么行内盒会溢出行盒。
+
+当一个行内盒被分割了，margin、padding和border在所有的分割处没有视觉效果。
+
+行内盒还可能由于双向文本处理（bidirectional text processing），在同一个行盒中被分割成几个盒。
+
+行盒是为了控制在IFC中的行内级内容的需要而创建的。不包含文本、保留空白符，和margin、padding以及border是非0的行内元素，以及在其他普通流中的内容和不是以换行结束的行盒必须当做零高度行盒对待以达到确定在他们中的元素的位置的目的且以不存在其他目的来对待。
+
+_下边的就是一个行内盒结构的例子。P包含了匿名文本以及用EM和STRONG包含的文本内容：_
+
+```html
+<P>Several <EM>emphasized words</EM> appear
+<STRONG>in this</STRONG> sentence, dear.</P>
+```
+
+_P元素生成了一个块盒，这个块盒包含了5个行内盒，其中的3个是匿名的：_
+
+_* 匿名的："Several"_
+
+_* EM："emphasized words"_
+
+_* 匿名的："appear"_
+
+_* STRONG："in this"_
+
+_* 匿名的："sentence, dear."_
+
+_对于段落的格式化，用户代理将这5个盒放在行盒中。在这个例子中，P元素生成的盒为了这些行盒建立了包含块。如果这个包含块是足够宽的话，所有的行内盒都会放在一个单独的行盒中：_
+
+Several _emphasized words_ appear __in this__ sentence, dear.
+
+_如果不够宽的话，这些行内盒就会被分割成跨越几个行盒分布。上边的段落可能是下边的样子：_
+
+Several _emphasized words_ appear
+
+__in this__ sentence, dear.
+
+_或者是这样的：_
+
+Several _emphasized_
+
+_words_ appear __in this__
+
+sentence, dear.
+
+在上边的例子中，EM盒被拆分成了两个EM盒（"split1"和"split2"）。在split1之后和split2之前margin、border、padding或者文本装饰都是没有视觉效果的。
+
+_考虑下边的例子：_
+
+```html
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN">
+<HTML>
+  <HEAD>
+    <TITLE>Example of inline flow on several lines</TITLE>
+    <STYLE type="text/css">
+      EM {
+        padding: 2px; 
+        margin: 1em;
+        border-width: medium;
+        border-style: dashed;
+        line-height: 2.4em;
+      }
+    </STYLE>
+  </HEAD>
+  <BODY>
+    <P>Several <EM>emphasized words</EM> appear here.</P>
+  </BODY>
+</HTML>
+```
+
+_取决于P的宽，盒可能表现如下：_
+
+![行内布局示例](http://www.w3.org/TR/CSS21/images/inline-layout.png)
+
+_* margin插在了"emphasized"之前，"words"之后。_
+
+_* padding插在了"emphasized"的前面、上面以及下面，和"words"的后面、上面以及下面。每一种情况dashed的border都是渲染在了3个边上。_
+
+#### 相对定位
+
+一旦一个盒按照普通流或者浮动定位了，那么他还可以相对于该位置进行偏移。这就叫相对定位。用这种方式偏移一个盒B1，对其之后的盒B2是没有任何影响的：如果B1没有偏移，B2就已经给定了一个位置，那么当B1偏移了之后，B2还在原来的位置不发生变化。这也就意味着相对定位可能会产生盒的重叠。然而，如果相对定位引起"overflow:auto"或者"overflow:scroll"框的溢出，用户代理必须允许用户访问里边的内容，也就是需要创建滚动条，这可能会影响布局。
+
+一个相对定位了的盒保持着他在普通流中的尺寸，包括换行以及其原来的位置。‘包含块’段落解释了当一个相对定位了的盒会建立一个新的包含块。
+
+针对于相对定位的元素，left和right使得盒在水平方向上移动，不改变其大小。left能够让盒子向右边移动，right能让盒子向左边移动。由于盒不能被分割或者拉伸，所以使用值通常是：left = -right。
+
+* 如果left和right都是auto的话，使用值就是0。
+
+* 如果left是auto，他的使用值就是right的负值。
+
+* 如果right被指定为auto，那么他的使用值就是left的负值。
+
+* 如果left和right都不是auto，那么定位就很难了，他们中的一个必须被忽略。如果包含块的direction是ltr的话，使用left的值，right变成left的负值。如果direction是rtl的话，使用right的值，left的值是right的负值。
+
+_例子，下边的三条规则是相同的：_
+
+```css
+div.a8 { position: relative; direction: ltr; left: -1em; right: auto }
+div.a8 { position: relative; direction: ltr; left: auto; right: 1em }
+div.a8 { position: relative; direction: ltr; left: -1em; right: 5em }
+```
+
+top和bottom属性使得相对定位元素在上下放下上移动，但是不改变尺寸。top使得盒子向下移动，bottom使得盒子向上移动。同样的盒子不能被分割或者拉伸，所以有一个必须被忽略，使用值通常是：top = -bottom。
+
+* 如果top和bottom都是auto，那么使用值就是0
+
+* 如果他们其中之一死auto，那么他的值就是另一个值的负值
+
+* 如果他们都不是auto，bottom会被忽略
+
+在‘普通流、浮动和绝对定位’段落中提供了相对定位的例子。
+
+### 浮动
 
