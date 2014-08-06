@@ -379,15 +379,15 @@ _下边的就是一个行内盒结构的例子。P包含了匿名文本以及用
 
 _P元素生成了一个块盒，这个块盒包含了5个行内盒，其中的3个是匿名的：_
 
-_* 匿名的："Several"_
+* _匿名的："Several"_
 
-_* EM："emphasized words"_
+* _EM："emphasized words"_
 
-_* 匿名的："appear"_
+* _匿名的："appear"_
 
-_* STRONG："in this"_
+* _STRONG："in this"_
 
-_* 匿名的："sentence, dear."_
+* _匿名的："sentence, dear."_
 
 _对于段落的格式化，用户代理将这5个盒放在行盒中。在这个例子中，P元素生成的盒为了这些行盒建立了包含块。如果这个包含块是足够宽的话，所有的行内盒都会放在一个单独的行盒中：_
 
