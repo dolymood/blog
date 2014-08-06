@@ -344,7 +344,7 @@ img { display: none }      /* Do not display images */
 
 #### BFC 块级格式化上下文
 
-不是块盒的浮动元素、绝对定位元素、块容器（例如inline-block table-cell table-caption）元素，以及overflow不是visible的块盒会给他们的内容创建新的BFC。
+浮动元素、绝对定位元素、不是块盒的块容器（例如inline-block table-cell table-caption）元素，以及overflow不是visible的块盒会给他们的内容创建新的BFC。
 
 在一个BFC中，盒是从其包含块的顶部一个挨着一个在垂直方向上布局的。两个在垂直方向上相邻的的盒子之间的间距是由margin属性确定的。在同一个BFC中的两个毗邻的块级盒在垂直方向的margin会发生折叠。
 
@@ -476,3 +476,561 @@ top和bottom属性使得相对定位元素在上下放下上移动，但是不�
 
 ### 浮动
 
+浮动就是一个盒在当前行向左或者向右偏移。浮动最有意思的地方就是内容可以沿着他的边排列（除非有clear属性）。内容会沿着一个左浮动的盒的右边向下排列且会沿着一个右浮动的盒的左边向下排列。接下来就是关于浮动定位和内容浮动的介绍；float属性准确描述控制浮动行为的规则。
+
+一个浮动的盒子会向左或者向右偏移，直到遇到了他的包含块的边界或者另一个浮动元素的外边界。如果有一个行盒存在，那么浮动盒的外顶部会和当前的线盒的顶部对齐。
+
+如果在水平方向上没有足够的空间浮动的话，他就会向下移动，直到有足够的空间或者没有更多浮动存在。
+
+由于浮动不在普通流中，在该浮动盒之前或者之后的非定位块盒垂直排列就如同浮动不存在一样。然而，浮动盒之后创建的行盒为了给浮动盒提供空间而缩短。
+
+如果被缩短的行盒太小了以至于不能包含任何内容的话，那么这个行盒就会下移，直到有足够的空间或者没有更多的浮动存在。在当前行浮动盒之前的内容都将被重排到浮动另一边相同的行里。换句话说，如果在一行中，行内级盒在一个左浮动之前（同时左浮动也被放置在当前行），剩余的空间能够放下这个行内级盒的话，他就会和当前线盒的顶端对齐，并且在这一行的的行内级盒将会移动到这个浮动的右边；反之亦然，对于rtl和右浮动框也是一样的。
+
+table、块级替换元素或者在普通流中的创建了新的BFC的元素的border box必须不能覆盖在同一个BFC中的任何的浮动元素。如果有必要的话，实现者应该通过把元素放到前面的浮动的下边来清理之前说的元素，但是如果有足够的空间，也可以把他紧邻浮动放置。他们甚至可以让border box比在下一章中定义的还要窄。在CSS2中没有定义用户代理把先前说的紧邻浮动的元素如何放置或者说这个元素可以变得多窄。
+
+_示例，下边的文档片段中，包含块太窄了包不下和浮动紧邻的内容，因此内容就会移动下浮动的下边，他的对齐方式取决于text-align属性：_
+
+```
+p { width: 10em; border: solid aqua; }
+span { float: left; width: 5em; height: 5em; border: solid blue; }
+
+
+...
+
+
+<p>
+  <span> </span>
+  Supercalifragilisticexpialidocious
+</p>
+```
+
+_看起来可能是下边这样的：_
+
+![空间够示例](http://www.w3.org/TR/CSS21/images/supercal.png)
+
+几个浮动可能是相邻的，并且这种模式同样可以应用到在相同行中的相邻的浮动。
+
+_下边的示例中的几条规则使得所有的带有class="icon"的IMG的盒浮动到左边：_
+
+```css
+img.icon { 
+  float: left;
+  margin-left: 0;
+}
+```
+
+_考虑下边的HTML源码以及样式：_
+
+```html
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN">
+<HTML>
+  <HEAD>
+    <TITLE>Float example</TITLE>
+    <STYLE type="text/css">
+      IMG { float: left }
+      BODY, P, IMG { margin: 2em }
+    </STYLE>
+  </HEAD>
+  <BODY>
+    <P><IMG src=img.png alt="This image will illustrate floats">
+       Some sample text that has no other...
+  </BODY>
+</HTML>
+```
+
+_IMG盒浮动到了左边。接下来的内容格式化到了浮动的右边，和浮动在同一行的位置开始。在浮动右边的行盒由于浮动而缩短了，但是在浮动之后的他们的宽就是normal宽了（也就是由P创建的包含块的宽度）。这个文档可能被格式化为下边这样：_
+
+![示例](http://www.w3.org/TR/CSS21/images/floateg.png)
+
+_如果文档是这样的也会有同样的效果：_
+
+```html
+<BODY>
+  <P>Some sample text 
+  <IMG src=img.png alt="This image will illustrate floats">
+           that has no other...
+</BODY>
+```
+
+_因为浮动左边的内容被浮动替换掉了，然后重排到了他的右边。_
+
+就像之前margin折叠的状态一样，浮动的盒的margin永远不会和他相邻的盒发生折叠。因此，在上边的例子中，P盒和浮动的IMG盒在垂直方向的margin是不会折叠的。
+
+如果浮动创建了新的层叠上下文（除了定位了的元素和的确创建了新的堆叠上下文但是是其父堆叠上下文的一部分的元素）的话，那么他的内容会堆叠。浮动可以覆盖在普通流中的盒（例如，一个普通的盒紧邻着有着负margin的浮动的情况下）。当这种情况发生的时候，浮动会渲染到在流中的非定位块盒之前，但是在流中的行内盒之后。
+
+_下边是另一个图，展示了当一个浮动覆盖在普通流中元素的border之上的时候发生的：_
+
+![示例](http://www.w3.org/TR/CSS21/images/float2p.png)
+
+接下来额这个例子展示了利用clear属性来阻止紧邻浮动的内容发生排列的样子。
+
+_指定这样的规则：_
+
+```css
+p { clear: left }
+```
+
+_格式化之后的样子：_
+
+![示例](http://www.w3.org/TR/CSS21/images/floatclear.png)
+
+#### 浮动定位：float属性
+
+* __'float'__
+
+	_值：_ left | right | none | inherit
+
+	_初始化：_ none
+
+	_应用在：_ 一切元素上，但是详情请看‘display、position和float之间的关系’
+
+	_可继承：_ 不可以
+
+	_百分比：_ 相对于包含块的宽度
+
+	_媒介：_ 可见媒介
+
+	_计算值：_ 和指定值一样
+
+这个属性指定了一个盒是应该往左、右浮动或者根本不浮动。他可以设置在任何元素上，但是只能应用在那些没有绝对定位的元素上面。属性的值有如下的意思：
+
+* __left__
+	
+	这个元素会生成一个向左浮动的块盒。内容排到这个盒子的右边，从顶部开始。
+
+* __right__
+	
+	和left很像，除了这个盒是向右浮动的，且内容会排到这个盒子的左侧，从顶部开始。
+
+* __none__
+	
+	这个盒不浮动。
+
+用户代理应该把根元素上的float当none处理，也就是说在根元素上的浮动是无效的。
+
+下边给出了控制浮动行为的一些规则说明：
+
+1. 一个左浮动的盒的左外边不能出现在他的包含块的左边界的左边。对于右浮动也有类似的规则。也就是说，左浮动元素的左外边界不能超出他的包含块的左边界；右浮动元素的右外边界不能超出他的包含块的右边界。
+
+1. 如果当前盒是左浮动的，且在源文档中存在更早生成的左浮动的盒的话，那么对于每一个之前的盒来说，要么当前盒的左外边出现在之前盒的右边界的右侧，要么他的顶部必须在之前盒的底部之下。也就是说，当前浮动盒的定位会受到先前生成的同向浮动盒的影响，它们不能相互覆盖。当前浮动盒需要紧挨着先前同向浮动盒的外边界进行定位，如果当前行空间不足，则折行，放置到它之前浮动盒的下面。
+
+1. 一个左浮动的盒的右外边不能出现在他右侧的任何右浮动盒的左外边的右侧。对于右浮动也有类似规则。也就是说，同一行中不同向的浮动盒不能够有重叠的现象。
+
+1. 一个浮动盒的顶外边（outer edge）不能比他的包含块的顶部还要高。当一个浮动盒发生在两个叠加的外边距之间的时候，浮动的定位好像是他有另外一个空的匿名块级父盒在普通流中。这个匿名的父盒的位置是在margin折叠的段落中规则定义的。也就是说，当浮动盒处于两个折叠外边距中间的时候，会被当做包含在一个空的块盒中，他上边和下边的外边距会穿过它发生外边距叠加，如同这个浮动盒不存在一样。
+
+1. 一个浮动盒的顶外边不能高于源文档中之前元素产生的块或者浮动盒的顶。
+
+1. 一个元素的浮动盒的顶外边不能高于源文档中之前元素产生的任何一个包含着盒的行盒的顶。
+
+1. 一个在其左边有另一个左浮动的盒的左浮动的盒，他的右外边不能出现在他的包含块的右边界的右侧（宽松点的话：一个左浮动不能超出右边界，除非他已经尽可能的靠左了）。对于右浮动元素也有类似的规则。
+
+1. 一个浮动盒必须放置的尽可能的高。
+
+1. 一个左浮动盒必须尽量靠左，右浮动的盒必须尽量的靠右。在更高的位置或者更左/右的选择中选择前者，也就意味着高优先。
+
+但是在CSS2.1中，如果在BFC中有一个在普通流中的垂直方向上有负margin的盒，那么浮动的位置是在把那个负margin被设置为0的情况下的位置之上的，浮动的位置是未确定的。
+
+在这些规则中涉及到的其他元素和浮动元素在相同的BFC中的。
+
+_下面的HTML片段的结果是b浮动到了右边。_
+
+```html
+<P>a<SPAN style="float: right">b</SPAN></P>
+```
+
+_如果P元素够宽的话，a和b将会是在在两边。像这样：_
+
+![示例](http://www.w3.org/TR/CSS21/images/float-right.png)
+
+#### 控制紧邻浮动的排列：clear属性
+
+* __'clear'__
+
+	_值：_ none | left | right | both | inherit
+
+	_初始化：_ none
+
+	_应用在：_ 块级元素
+
+	_可继承：_ 不可以
+
+	_百分比：_ 相对于包含块的宽度
+
+	_媒介：_ 可见媒介
+
+	_计算值：_ 和指定值一样
+
+这个属性指定了一个元素的盒在哪一边不可以和之前的浮动盒相邻。clear属性不考虑这个元素自身内部的或者在另外的BFC中的浮动。
+
+当这个属性应用在非浮动的块级盒上的时候，值有如下的意思：
+
+* __left__
+	
+	这个盒的顶外边要比出现在源文档中之前元素生成的任何左浮动盒的下外边低。
+
+* __right__
+	
+	这个盒的顶外边要比出现在源文档中之前元素生成的任何右浮动盒的下外边低。
+
+* __right__
+	
+	这个盒的顶外边要比出现在源文档中之前元素生成的任何左浮动盒、右浮动盒的下外边低。
+
+* __none__
+	
+	相对于浮动没有任何位置上的限制。
+
+当clear的属性值不是none的时候可以产生间隙（clearance）。间隙可以阻止margin折叠，同时还作为元素的margin-top之上的空白（spacing）。他用来把元素从垂直方向上推过浮动。
+
+一个设置了clear的元素间隙的值可先通过确定该元素的上外边假定的位置来计算。这个位置就是假设这个元素设置了clear属性是none的时候的真实的顶外边。
+
+如果这个元素假定的顶外边的位置没有通过相关的浮动的话，那么间隙就会被引入，且根据之前章节说的规则影响margin折叠。
+
+然后间隙的量（值amount）就是下边的较大的：
+
+1. 需要的量就是使得这个块的border边界在 需要清除的浮动中的最靠下的那个下外边。
+
+1. 需要的量就是使得这个块的顶外边在假定的位置。
+
+或者，精确设置间隙的量就是使得这个块的border边界在需要清除的浮动中的最靠下的那个下外边界。
+
+_注意：间隙可以是0也可以是负值。_
+
+_例子1，假定我们只有三个盒，他们是这样排的：块B1的bottom margin叫M1（B1没有孩子也没有padding和border），浮动盒F的高是H，且块B2有一个top margin叫M2（没有padding和border，也没孩子）。B2有clear属性设置为both。我们同样可以假定B2不是空的。_
+
+_不考虑B2的clear属性，我们会有下边的方案。B1和B2的margin折叠了。我们可以说B1的下border边界是在y=0的位置，然后F的上border的位置是在y=M1的位置，B2的上border边界是在y=max(M1,M2)的位置，且F的下border是在y=M1+H的位置。_
+
+![示例](http://www.w3.org/TR/CSS21/images/clearance.png)
+
+_我们也假定B2不在F下边等等，我们是描述需要空隙的情况。这意味着：_
+
+max(M1, M2) < M1 + H
+
+_我们需要计算间隙C两次，C1和C2，然后取较大值：C=max(C1,C2)。第一种方式是将B2的顶和F的低对齐，在y=M1+H的位置。这意味着由于margin不再折叠了，因为他们之间有空隙了：_
+
+bottom of F	= top border edge of B2
+
+M1 + H	= M1 + C1 + M2
+
+C1	= M1 + H - M1 - M2
+
+C1  = H - M2
+
+_第二种方式就是保留B2顶部的位置y=max(M1,M2)。这意味着：_
+
+max(M1,M2)	= M1 + C2 + M2
+
+C2	= max(M1,M2) - M1 - M2
+
+_我们假设了max(M1, M2) < M1 + H，所以_
+
+C2 = max(M1,M2) - M1 - M2	< M1 + H - M1 - M2 = H - M2
+C2	< H - M2
+C2  < C1
+
+_所以说：_
+
+C = max(C1, C2) = C1
+
+_例子2，这个例子是考虑间隙是负值的情景下的，间隙的值是-1em：_
+
+```html
+<p style="margin-bottom: 4em">第一段
+<p style="float: left; height: 2em; margin: 0">浮动段
+<p style="clear: left; margin-top: 3em">最后一段
+```
+
+_解释：当没有clear的时候，第一段和最后一段的margin会折叠的，最后一段的上border边会和浮动段的顶部齐平。但是clear需要顶border边在float之下，低2em。这意味着空隙必须被引入。相应的margin不再折叠了，所以说clearance+margin-top=2em，所以clearance=2em-3em=-1em._
+
+当这个属性设置在了浮动元素上时，他会导致浮动盒定位规则的修正。额外的第10条需要添加：
+
+* 浮动的顶外边必须低于前面的所有左浮动盒（clear是left）或者右浮动盒（clear是right）或者左右浮动盒（clear是both）的下外边界。
+
+_注意：在CSS1中，这个属性可以应用在所有元素上。在CSS2和CSS2.1中，clear属性仅仅只能用在块级元素上。_
+
+### 绝对定位
+
+在绝对定位模式中，一个盒子根据其包含块明确的偏移。他完全从普通流中脱离。一个绝对定位盒会为他的普通流中的孩子们和绝对定位子孙们（不是fixed）创建新的包含块。然而，绝对定位元素的内容不会绕着其他盒排列。他们可能会遮盖其他盒（或者遮挡自身）的内容，这取决于互相重合的盒的‘层叠级别’。
+
+在本规范中规定的绝对定位元素（或者他的盒）意味着这个元素的position属性是absolute或者fixed。
+
+#### 固定定位 fixed positioning
+
+固定定位是绝对定位的一个子集。对于一个固定定位盒来说唯一的不同就是，他的包含块是由viewport创建的。针对于‘可持续媒体’来说，固定定位盒不会随着滚动而滚动。这种情况有点类似于‘固定背景图fixed background images’。针对于‘分页媒体’来说，固定定位盒在每一页都会重复。这对于需要在每一页底部放置一个签名时是很有用的。固定定位盒如果比页的区域要大的话，将会被裁剪。部分的固定定位盒在初始化包含块的时候不可见的话就不会被打印。
+
+_作者可以使用固定定位来创建框架（frame）状演示文稿。考虑下边的片段布局：_
+
+![frame](http://www.w3.org/TR/CSS21/images/frame.png)
+
+_可以通过如下的HTML文档和样式规则实现：_
+
+```html
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN">
+<HTML>
+  <HEAD>
+    <TITLE>A frame document with CSS 2.1</TITLE>
+    <STYLE type="text/css" media="screen">
+      BODY { height: 8.5in } /* Required for percentage heights below */
+      #header {
+        position: fixed;
+        width: 100%;
+        height: 15%;
+        top: 0;
+        right: 0;
+        bottom: auto;
+        left: 0;
+      }
+      #sidebar {
+        position: fixed;
+        width: 10em;
+        height: auto;
+        top: 15%;
+        right: auto;
+        bottom: 100px;
+        left: 0;
+      }
+      #main {
+        position: fixed;
+        width: auto;
+        height: auto;
+        top: 15%;
+        right: 0;
+        bottom: 100px;
+        left: 10em;
+      }
+      #footer {
+        position: fixed;
+        width: 100%;
+        height: 100px;
+        top: auto;
+        right: 0;
+        bottom: 0;
+        left: 0;
+      }
+    </STYLE>
+  </HEAD>
+  <BODY>
+    <DIV id="header"> ...  </DIV>
+    <DIV id="sidebar"> ...  </DIV>
+    <DIV id="main"> ...  </DIV>
+    <DIV id="footer"> ...  </DIV>
+  </BODY>
+</HTML>
+```
+
+### display、position以及float之间的关系
+
+影响盒生成和布局的三个属性——display、position和float——之间会像下边列的互相影响：
+
+1. 如果display的的值是none的话，那么position和float不起作用。在这种情况下，元素不会生成盒。
+
+1. 其他情况，如果position的值是absolute或者fixed，那么这个盒就是绝对定位的，float的计算值是none，切display的值会根据下边的表来设置。这个盒的位置将会是由top、right、bottom和left属性相对于其包含块确定的。
+
+1. 其他情况，如果float的值不是none，这个盒就会浮动并且display会依照下表设置。
+
+1. 其他情况，如果这个元素是根元素，display的值将会按照下表来设置，除了在CSS2.1中未确定的，一个规定的值list-item的计算值是否应该是block或者list-item。
+
+1. 其他应用指定的display属性值。
+
+_PS: 这里加上一个来自[w3help](http://www.w3help.org/zh-cn/kb/009/)的流程图，更清晰明了：_
+
+![流程图](http://www.w3help.org/zh-cn/kb/009/009/display_float_position.png)
+
+| 设定值 | 计算值 |
+
+| ------ | ------ |
+
+| inline-table | table |
+
+| inline, run-in, table-row-group, table-column, table-column-group, table-header-group, 
+table-footer-group, table-row, table-cell, table-caption, inline-block | block |
+
+| 其他 | 同设定值 |
+
+### 普通流、浮动和绝对定位的对比（比较）
+
+为了阐述普通流、相对定位、浮动以及绝对定位之间的不同，我们提供了一系列的例子，基本的HTML：
+
+```html
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN">
+<HTML>
+  <HEAD>
+    <TITLE>Comparison of positioning schemes</TITLE>
+  </HEAD>
+  <BODY>
+    <P>Beginning of body contents.
+      <SPAN id="outer"> Start of outer contents.
+      <SPAN id="inner"> Inner contents.</SPAN>
+      End of outer contents.</SPAN>
+      End of body contents.
+    </P>
+  </BODY>
+</HTML>
+```
+
+在这个文档中，我们假定有一下的规则：
+
+```css
+body { display: block; font-size:12px; line-height: 200%; 
+       width: 400px; height: 400px }
+p    { display: block }
+span { display: inline }
+```
+
+在每一个例子中，outer和inner元素生成的最终的盒的位置都是不一样的。在每一个图的左侧用双倍行距线（为了清楚起见）来表示普通流的位置。
+
+#### 普通流
+
+考虑下边的关于inner和outer的CSS声明，不会改变盒的普通流：
+
+```css
+#outer { color: red }
+#inner { color: blue }
+```
+
+P元素包含着所有行内内容：匿名的行内文本和两个SPAN元素。因此，所有的内容将会在同一个IFC中布局，在同一个由P元素生成的包含块中，如下样子：
+
+![示意图](http://www.w3.org/TR/CSS21/images/flow-generic.png)
+
+#### 相对定位
+
+为了看看相对定位的效果，我们设定：
+
+```css
+#outer { position: relative; top: -12px; color: red }
+#inner { position: relative; top: 12px; color: blue }
+```
+
+outer元素的文本通常会向上排列。outer中文本在第1行的末端排列到他普通流中的位置和尺寸。然后行内盒包含着文本（跨越3行）向上移动了12px（向上）。
+
+inner的内容，作为outer的子元素，会立即在of outer contents字之后正常布局（在行1.5位置）。然而，inner的内容他们自身是相对于outer内容便宜的（乡下），重新回到了他们的原始位置（第2行）。
+
+注意紧接着outer的内容不受outer相对定位的影响。
+
+![示意图](http://www.w3.org/TR/CSS21/images/flow-relative.png)
+
+同时注意如果outer有-24px的偏移的话，outer的文本和body的文本就会叠加了。
+
+#### 浮动盒
+
+现在考虑让inner元素的文本浮动到右边的效果，需要如下规则：
+
+```css
+#outer { color: red }
+#inner { float: right; width: 130px; color: blue }
+```
+
+inner盒的文本通常会向上排列，inner盒会脱离普通流，且会浮动到右margin位置（他的宽width被明确设置了）。行盒中浮动左侧缩短了，且文档剩余的文本排列在他们旁边。
+
+![示意图](http://www.w3.org/TR/CSS21/images/flow-float.png)
+
+为了看看clear的效果，我们给这个例子增加一个相邻的元素：
+
+```html
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN">
+<HTML>
+  <HEAD>
+    <TITLE>Comparison of positioning schemes II</TITLE>
+  </HEAD>
+  <BODY>
+    <P>Beginning of body contents.
+      <SPAN id=outer> Start of outer contents.
+      <SPAN id=inner> Inner contents.</SPAN>
+      <SPAN id=sibling> Sibling contents.</SPAN>
+      End of outer contents.</SPAN>
+      End of body contents.
+    </P>
+  </BODY>
+</HTML>
+```
+
+下面的规则：
+
+```css
+#inner { float: right; width: 130px; color: blue }
+#sibling { color: red }
+```
+
+inner像之前一样浮动到右边，剩下的文字利用剩余空间排列：
+
+![示意图](http://www.w3.org/TR/CSS21/images/flow-clear.png)
+
+然而，如果在sibling元素上设置clear属性的值是right，那么这个sibling元素就会在浮动的下边开始排列：
+
+```css
+#inner { float: right; width: 130px; color: blue }
+#sibling { clear: right; color: red }
+```
+
+![示意图](http://www.w3.org/TR/CSS21/images/flow-clear2.png)
+
+#### 绝对定位
+
+最后，我们看下绝对定位的效果。给outer和inner赋予下面的CSS声明：
+
+```css
+#outer { 
+    position: absolute; 
+    top: 200px; left: 200px; 
+    width: 200px; 
+    color: red;
+}
+#inner { color: blue }
+```
+
+这样会使得outer盒相对于其包含块顶部定位。一个定位盒的包含块是最近的定位了的祖先（如果没有就是初始包含块，我们例子中就是）。outer盒到包含块的顶部距离是200px，到左边界距离是200px。outer的子盒会根据他的父盒正常的排列。
+
+![示意图](http://www.w3.org/TR/CSS21/images/flow-absolute.png)
+
+接下来的例子展示了绝对定位盒是一个相对定位盒的孩子的场景。尽管outer盒没有实际上的偏移，设置他的position属性值为relative意味着他的盒可以作为包含块用来定位他的子孙们。由于outer盒是一个行内盒，且被分割成了好几行，第一行行内盒的上和左边界作为top和left的偏移的根据。
+
+```css
+#outer { 
+  position: relative; 
+  color: red 
+}
+#inner { 
+  position: absolute; 
+  top: 200px; left: -100px; 
+  height: 130px; width: 130px; 
+  color: blue;
+}
+```
+
+结果是这样的：
+
+![示意图](http://www.w3.org/TR/CSS21/images/flow-abs-rel.png)
+
+如果我们不定位outer盒子：
+
+```css
+#outer { color: red }
+#inner {
+  position: absolute; 
+  top: 200px; left: -100px; 
+  height: 130px; width: 130px; 
+  color: blue;
+}
+```
+
+inner的包含块就成了初始包含块。然后就变成了下边的样子：
+
+![示意图](http://www.w3.org/TR/CSS21/images/flow-static.png)
+
+_相对定位和绝对定位可以用来实现可变bars，像下边的例子中展示的那样：_
+
+```html
+<P style="position: relative; margin-right: 10px; left: 10px;">
+I used two red hyphens to serve as a change bar. They
+will "float" to the left of the line containing THIS
+<SPAN style="position: absolute; top: auto; left: -1em; color: red;">--</SPAN>
+word.</P>
+```
+
+_结果：_
+
+![示意图](http://www.w3.org/TR/CSS21/images/changebar.png)
+
+_最开始，段落正常的排列。然后他相对于其包含块的左边界便宜10px。两个连字符作为从普通流中拿出作为可变bars，并定位到当前行（因为top:auto），相对于它的包含块的左边界偏移-1em（通过P最终位置确定的）。结果上来看就像是可变bars“浮动”到了当前行的左边。_
+
+### 分层显示
