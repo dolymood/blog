@@ -18,6 +18,8 @@
 
 	如果没有这样额祖先元素的话，包含块就是初始包含块。
 
+<!--more-->
+
 _PS: 这里来上一张来w3help的图：_
 
 ![包含块判断](http://www.w3help.org/zh-cn/kb/008/008/CB4.png)
@@ -126,7 +128,7 @@ _例如，设置一个段落的宽是100像素：_
 p { width: 100px }
 ```
 
-### 计算宽和margin
+### 计算width和margin
 
 一个元素用于布局的width, margin-left, margin-right, left和right属性的值取决于他们自身所生成的盒的类型。实际上，使用值是和计算值一样的，用auto代替不可用的值，切百分比的值的计算都是以包含块为基础的，但是也有例外。下边的这些情况是需要区别对待的：
 
@@ -160,15 +162,15 @@ width不起作用。如果margin-left和margin-right是auto的话，计算值就
 
 如果margin-left和margin-right是auto的话，计算值就是使用值0。
 
-如果width和height的计算值都是auto，且这个元素有原始宽，那么原始宽就是width的使用值。
+如果width和height的计算值都是auto，且这个元素有固有宽，那么固有宽就是width的使用值。
 
-如果width和height的计算值都是auto，且这个元素没有原始宽，但是有原始高或者原始比例；或者width的计算值是auto，height有其他的计算值，且这个元素有原始比例；那么width的使用值就是：
+如果width和height的计算值都是auto，且这个元素没有固有宽，但是有固有高或者固有比例；或者width的计算值是auto，height有其他的计算值，且这个元素有固有比例；那么width的使用值就是：
 
-	height的使用值 * 原始宽高比（原始比例）
+	height的使用值 * 固有宽高比（固有比例）
 
-如果width和height的计算值都是auto，且这个元素有原始比例，但是没有原始的宽、高，那么在CSS2.1中width的使用值就是undefined。然而，建议是这样，如果包含块宽本身宽不依赖于这个替换元素的话，那么width的使用值就是和在普通流中的块级非替换元素的宽是相等的。
+如果width和height的计算值都是auto，且这个元素有固有比例，但是没有固有的宽、高，那么在CSS2.1中width的使用值就是undefined。然而，建议是这样，如果包含块宽本身宽不依赖于这个替换元素的话，那么width的使用值就是和在普通流中的块级非替换元素的宽是相等的。
 
-其他情况，如果width的计算值是auto，且这个元素有原始宽，那么width的使用值就是原始宽的值。
+其他情况，如果width的计算值是auto，且这个元素有固有宽，那么width的使用值就是固有宽的值。
 
 其他情况，如果width的使用值是auto，且没有什么条件的话，那么width的使用值就变成了300px。如果对于设备来说300px太大了，那么用户代理就应该用一个具有2:1的比例的且适应设备的最大矩形的宽来代替。
 
@@ -256,7 +258,7 @@ width的使用值用‘行内替换元素’中的规则确定。然后用‘非
 
 1. 这时候如果还有谁的值是auto，那么就利用等式计算他的值。
 
-1. 这时候如果值超出条件了，忽略left（direction是rtl）或者right（direction是ltr）的值，且计算另一个值。
+1. 这时候如果值超出条件了，忽略left（direction是rtl）或者right（direction是ltr）的值，且计算那个值。
 
 #### 普通流中的inline-block，非替换元素
 
@@ -290,7 +292,7 @@ width的使用值用‘行内替换元素’中的规则确定。然后用‘非
 	
 	_值：_  <length> | <percentage> | none | inherit
 
-	_初始化：_ 0
+	_初始化：_ none
 
 	_应用在：_ 一切元素除了非替换行内元素，table-rows以及row groups
 
@@ -322,14 +324,268 @@ min-width，max-width如果是负值的话是不合法的。
 
 下边的算法描述了这两个属性是怎么影响width属性的值的：
 
-1. 暂时的使用的宽是根据上面的‘计算宽和marin’的规则计算出来的（没有min-width和max-width）。
+1. 暂时的使用的宽是根据上面的‘计算width和marin’的规则计算出来的（没有min-width和max-width）。
 
-1. 如果暂时的使用的宽比max-width要打，再次应用上边的规则，但是这次width的计算值是max-width的计算值。
+1. 如果暂时的使用的宽比max-width要大，再次应用上边的规则，但是这次width的计算值要使用max-width的计算值。
 
-1. 如果结果宽比min-width要小的话，再次应用上边的规则，但是这次width的计算值是min-width的计算值。
+1. 如果结果宽比min-width要小的话，再次应用上边的规则，但是这次width的计算值要使用min-width的值。
 
-然而，对于有原始比例且width和height都是auto的替换元素来说，算法是这样的：
+然而，对于有固有比例且width和height都是auto的替换元素来说，算法是这样的：
 
-从下边的table中选择可以适当的违反约束constraint violation来计算height和width的值。就拿max-width和max-height为max(min,max)，控制min ≤ max。在表中，w和h是代表忽略min-width,min-height, max-width和max-height的属性的情况下计算的width和height的结果。通常会有原始的width和height，但是他们可能不在替换元素且有原始比例的这种情况下。
+从下边的table中选择可以适当的违反约束constraint violation来计算height和width的值。就拿max-width和max-height为max(min,max)，控制min ≤ max。在表中，w和h是代表忽略min-width,min-height, max-width和max-height的属性的情况下计算的width和height的结果。通常会有固有的width和height，但是他们可能不在替换元素且有固有比例的这种情况下。
 
 ![表](https://github.com/dolymood/blog/raw/master/pics/002.png)
+
+然后利用计算出的width的值应用之前的‘计算width和marin’的规则。
+
+### 内容高：height属性
+
+* __height__
+	
+	_值：_  <length> | <percentage> | auto | inherit
+
+	_初始化：_ auto
+
+	_应用在：_ 一切元素除了非替换行内元素，table rows和row groups
+
+	_可继承：_ 不可以
+
+	_百分比：_ 看下文
+
+	_媒介：_ 可见媒介
+
+	_计算值：_ 指定的百分比和auto或者绝对的值
+
+这个属性指定了一个盒的content height（内容高）。
+
+这个属性不能应用到非替换的行内元素上。请看下面的‘非替换行内元素中计算height和margin段落’段落。
+
+height的值有如下意思：
+
+
+* __<length>__
+	
+	使用一个绝对单位的值指定内容区域的高度。
+
+* __<percentage>__
+	
+	使用一个百分比宽。百分比的值是根据他的包含块的高计算的。如果包含块的高没有明确指定的话，且这个元素不是绝对定位的，计算值将是auto。根元素上的百分比的高的计算是相对于初始包含块。_注意：针对于其包含块是基于块级元素的绝对定位元素来说，百分比的计算是相对于那个元素的padding盒的高度的。_
+
+* __auto__
+	
+	这个宽取决于其他属性的值。看下边的段落。
+
+width的值不能是负的。
+
+_例如，设置一个段落的高是100像素：_
+
+```css
+p { height: 100px }
+```
+_段落中的内容高于100像素的话就会溢出overflow，取决于根据overflow属性。_
+
+### 计算height和margin
+
+为了计算top, margin-top, height, margin-bottom和bottom的值，我们就必须针对于如下类型的盒进行详细的介绍：
+
+1. 行内，非替换元素
+
+1. 行内，替换元素
+
+1. 普通流中的块级，非替换元素
+
+1. 普通流中的块级，替换元素
+
+1. 浮动，非替换元素
+
+1. 浮动，替换元素
+
+1. 绝对定位，非替换元素
+
+1. 绝对定位，替换元素
+
+1. 普通流中的inline-block，非替换元素
+
+1. 普通流中的inline-block，替换元素
+
+对于1——6，9——10点，top和bottom的使用值根据上一章中相对定位的规则确定。
+
+#### 行内，非替换元素
+
+height不起作用。当前内容的高需要以font为基础的，但是在本规范中没有规定是怎样的。
+
+一个行内、非替换盒的垂直方向上的padding，border以及margin从内容区域的顶部和底部开始的，且和line-height没有任何关系。但是在计算行盒的高度的时候只有line-height是有用的。
+
+如果使用了多种字体，内容区域的高度不在本规范中定义。
+
+#### 行内替换元素，普通流中块级替换元素，普通流中inline-block替换元素以及浮动替换元素
+
+如果margin-top或者margin-bottom是auto的话，使用值就是0。
+
+如果width和height的计算值都是auto，且这个元素有固有高，那么height的使用值就是固有高。
+
+其他，如果height的计算值是auto，元素有固有比例，那么height的使用值就是：
+
+	(used width使用width) / (intrinsic ratio固有比例)
+
+其他，如果height的计算值是auto，且这个元素有固有的高，那么height的使用值就是固有高。
+
+其他，如果height的计算值是auto，但是社么固有值都没有，那么height的使用值就必须是一个具有2:1比例的最大的矩形（高度不大于150px，且宽度不大于设备宽）的高。
+
+#### 当overflow的计算值不是visible时普通流中块级非替换元素
+
+这段也可应用到普通流中块级非替换元素（overflow不等于visible，但是已经传递到了viewport）上。
+
+如果margin-top或者margin-bottom是auto的话，使用值就是0。如果height是auto，那么height就取决于这个元素有仍和的块级孩子和他是否有padding或者border：
+
+这个元素的高是从他的内容的顶部边界到下边第一个适用的 距离：
+
+1. 最后一个行盒的下边界，如果一个一行或者多行的盒创建了新的IFC。
+
+1. 他的在普通流中最后一个孩子的bottom margin（可能折叠了）的下边界，如果这个孩子的bottom margin不和元素的bottom margin折叠的话。
+
+1. 他的在普通流中最后一个孩子的border的下边界，如果这个孩子的top margin不元素的bottom margin折叠的话。
+
+1. 0， 其他情况。
+
+只有在普通流中的孩子考虑在内（浮动盒和绝对定位盒被忽略，不考虑他们偏移的相对定位盒子）。注意子盒可能是匿名块盒。
+
+#### 绝对定位，非替换元素
+
+在这个以及下个段落中，static position静态位置，意思就是这个元素在普通流中的位置。更准确的来说，静态位置的top是从包含块的顶边界到假设盒（一个元素的position的值是static，他的float的值是none，clear属性的值是none的第一个盒）的top margin边界的距离。如果假设盒在包含块之上的话，这个值就是负的。
+
+但是相比较实际去计算这个假设盒的尺寸，用户代理更愿意去随意的猜测他的可能位置。
+
+为了计算出最佳的静态位置，固定定位元素的包含块是初始包含块而不是viewport。
+
+对于绝对定位元素来说，垂直方向上的使用值的大小必须符合下边的条件：
+
+	'top' + 'margin-top' + 'border-top-width' + 'padding-top' + 'height' + 'padding-bottom' + 'border-bottom-width' + 'margin-bottom' + 'bottom' = 包含块的height
+
+如果top。height，以及bottom这三个都是auto的话，设置top是静态位置且应用下边的第3条规则。
+
+如果他们三个都不是auto：如果margin-top和margin-bottom都是auto，那么在两个margin相等的条件下通过等式计算值。如果margin-top或者margin-bottom其中之一是auto，那么利用等式计算另一个值。如果值超出条件了，忽略bottom的值然后计算那个值。
+
+其他，应用下边6条规则中的一条：
+
+1. top和height是auto，且bottom不是auto，那么height就以下边的‘BFC根的auto高’内容，设置值为auto的margin-top和margin-bottom的值为0，然后计算top。
+
+1. top和bottom是auto，且height不是auto，然后设置top为静态位置，设置值为auto的margin-top和margin-bottom的值为0，然后计算bottom。
+
+1. height和bottom是auto，且top不是auto，然后就以下边的‘BFC根的auto高’内容，设置值为auto的margin-top和margin-bottom的值为0，然后计算bottom。
+
+1. top是auto，height和bottom不是auto，然后就设置值为auto的margin-top和margin-bottom的值为0，计算top。
+
+1. height是auto，top和bottom不是auto，然后就设置值为auto的margin-top和margin-bottom的值为0，计算height。
+
+1. bottom是auto，top和height不是auto，然后就设置值为auto的margin-top和margin-bottom的值为0，计算bottom。
+
+#### 绝对定位，替换元素
+
+在这种情况和上一个类似，除了元素有一个固有高。现在替换的顺序是这样的：
+
+1. 通过‘行内替换元素’中的规则确定height。如果margin-top或者margin-bottom设置为auto，那么他的使用值就由下边的规则确定。
+
+1. 如果top和bottom都是auto，把top替换为这个元素的静态位置。
+
+1. 如果bottom是auto，将margin-top或者margin-bottom是auto的值用0代替。
+
+1. 这时候如果margin-top和margin-bottom依旧是auto的话，在两个margin必须相等的条件下计算等式。
+
+1. 这时候只有一个auto值，那么就利用等式计算他的值。
+
+1. 这时候如果值超出条件了，忽略bottom的值，且计算那个值。
+
+#### 复杂情况
+
+这个段落应用在：
+
+* 在普通流中的块级，非替换元素，且其overflow的值不是visible（除了overflow属性已经传递到了viewport）。
+
+* inline-block，非替换元素。
+
+* 浮动，非替换元素。
+
+如果margin-top或者margin-bottom是auto，他们的使用值就是0。如果height是auto，那么他取决于‘BFC根的auto高’。
+
+对于inline-block元素来说，当计算行盒的高的时候使用margin盒。
+
+#### BFC根的auto高
+
+在一定的情况下（例如前几段中涉及到的），创建了BFC的元素的高按照如下计算：
+
+如果他只有行内级的孩子，那么height就是最顶的行盒的的顶部和最底部的行盒的低部之间的距离。
+
+如果他只有块级的孩子，那么height就是最顶的块级子盒的margin边界的顶部和最下的块级子盒的margin边界的底部之间的距离。
+
+绝对定位的孩子是被忽略的，且相对定位的盒是在忽略偏移情况下考虑的。注意子盒可能是一个匿名块盒。
+
+额外的，如果这个元素有任何的浮动子孙（他们的bottom margin的边界在元素的bottom content边界之下）的话，那么height就会增加到包含这些边界。只有参与到这个BFC内的盒子才考虑在内，在一个绝对定位的子孙中的浮动是不考虑在内的。
+
+### 最小和最大高：min-height和max-height
+
+他们对于控制元素的高在一个确定的范围内有时候是很有用的。
+
+* __min-height__
+	
+	_值：_  <length> | <percentage> | inherit
+
+	_初始化：_ 0
+
+	_应用在：_ 一切元素除了非替换行内元素，table columns以及column groups
+
+	_可继承：_ 不可以
+
+	_百分比：_ 参见其他
+
+	_媒介：_ 可见媒介
+
+	_计算值：_ 指定的百分比或者是绝对的值
+
+* __max-height__
+	
+	_值：_  <length> | <percentage> | none | inherit
+
+	_初始化：_ none
+
+	_应用在：_ 一切元素除了非替换行内元素，table columns以及column groups
+
+	_可继承：_ 不可以
+
+	_百分比：_ 参见其他
+
+	_媒介：_ 可见媒介
+
+	_计算值：_ 指定的百分比或者是绝对的值或者none
+
+这两个属性允许作者使得内容高在一个确定的范围中。他们的值有如下意思：
+
+* __<length>__
+	
+	指定一个固定的最小或者最大的计算的高。
+
+* __<percentage>__
+	
+	指定百分比。百分比的值是根据他生成盒的包含块的高计算的。如果包含块的高没有明确指定的话，且这个元素不是绝对定位的，那么百分比的值就为0（针对于min-height）或者none（针对于max-height）。
+
+* __none__
+	
+	（只能用在max-height上）这个盒没任何高度限制。
+
+min-height，max-height如果是负值的话是不合法的。
+
+在CSS2.1中，在tables, inline tables, table cells, table rows, 和 row groups上的min-height和max-height效果是未定义的。
+
+下边的算法描述了这两个属性是怎么影响height属性的值的：
+
+1. 暂时的使用的高是根据上面的‘计算height和marin’的规则计算出来的（没有min-height和max-height）。
+
+1. 如果暂时的使用的高比max-height要大，再次应用上边的规则，但是这次height的计算值要使用max-height的值。
+
+1. 如果结果高比min-height要小的话，再次应用上边的规则，但是这次height的计算值要使用min-height的值。
+
+然而，对于width和height都是auto的替换元素来说，使用上边‘最小和最大宽’中的算法来找到使用的width和height。然后，应用上边‘计算height和margin’中的规则，使用结果中的width和height作为他们的计算值。
+
+### 行高计算：line-height和vertical-align属性
+
+如同在‘IFC’段落中描述的那样，用户代理将行内级盒排列到一个垂直的行盒的层叠中。一个行盒的高按照如下来确定：
