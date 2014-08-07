@@ -1140,4 +1140,4 @@ _在接下来的示例中，盒的层叠级别是：text2=0, image=1, text3=2, t
 
 这个例子演示了透明（transparency）的概念。background默认的行为是允许其之后的盒可见。在这个例子中，每一个盒子透明覆盖在其之下的盒。这种行为可以使用已存在的‘background属性’来重写。
 
-### 最后关于文本方向的：direction和unicode-bidi属性，请参见[文本方向](http://www.w3.org/TR/CSS21/visuren.html#direction)
+### 最后关于文本方向的：direction和unicode-bidi属性，请参见w3c的[文本方向](http://www.w3.org/TR/CSS21/visuren.html#direction)
