@@ -999,13 +999,13 @@ inner像之前一样浮动到右边，剩下的文字利用剩余空间排列：
 如果我们不定位outer盒子：
 
 ```css
-#outer { color: red }
-#inner {
+ #outer { color: red }
+ #inner {
   position: absolute; 
   top: 200px; left: -100px; 
   height: 130px; width: 130px; 
   color: blue;
-}
+ }
 ```
 
 inner的包含块就成了初始包含块。然后就变成了下边的样子：
@@ -1029,3 +1029,115 @@ _结果：_
 _最开始，段落正常的排列。然后他相对于其包含块的左边界便宜10px。两个连字符作为从普通流中拿出作为可变bars，并定位到当前行（因为top:auto），相对于它的包含块的左边界偏移-1em（通过P最终位置确定的）。结果上来看就像是可变bars“浮动”到了当前行的左边。_
 
 ### 分层显示
+
+#### 指定层叠级别：z-index属性
+
+* _'z-index'_
+
+	_值：_ auto | <整数integer> | inherit
+
+	_初始化：_ auto
+
+	_应用在：_ 定位元素
+
+	_可继承：_ 不可以
+
+	_百分比：_ 不可用
+
+	_媒介：_ 可见媒介
+
+	_计算值：_ 和指定值一样
+
+对于一个定位盒，z-index属性指定了：
+
+1. 这个盒在当前的层叠上下文中的层叠级别。
+
+1. 盒是否生成局部层叠上下文。
+
+值有如下意思：
+
+* __<整数integer>__
+	
+	该整数是生成框在当前层叠上下文中的层叠级别。该框也会生成一个局部层叠上下文。
+
+* __<auto>__
+	
+	生成盒在当前的层叠上下文中的层叠级别是0。该盒不会创建新的局部层叠上下文除非他是根元素。
+
+_在这段落中，"在xx之前"意味着看起来离用户更近。_
+
+在CSS2.1中，每一个盒都有一个三个坐标的位置。除了他们在水平方向和垂直放上的位置，盒会沿着Z轴一个在另一个之上这样格式化。Z轴的位置在盒视觉重叠的时候是很重要的。这个段落主要就是讨论盒在Z轴上怎样定位的。
+
+画到画布上的渲染树的顺序是用层叠上下文描述的。层叠上下文能够包含深层的层叠上下文。一个层叠上下文是他父层叠上下文中一个不可分割的最小单位（从他的父层叠上下文的角度来看）；在其他层叠上下文中的盒，不可能出现在他的任何盒之间。
+
+每一个盒属于一个层叠上下文。在给定的层叠上下文中的每一个定位盒都有一个整数的层叠级别，他就是在同一层叠上下文中的在Z轴上相对于其他层叠级别的位置。具有更大层叠级别的盒往往被格式化到低层叠级别的盒之前。盒可以有负的层叠级别。在同一个层叠上下文中相同层叠级别的盒会按照在文档树中的顺序由后到前层叠。
+
+根元素形成根层叠上下文。其他的层叠上下文都是z-index的计算值不是auto的定位元素生成的。包含块和层叠上下文没有必要联系。在未来的CSS中，其他属性也可能会有层叠上下文，例如opacity。
+
+在每一个层叠上下文中，都有如下的由后到前的顺序的显示顺序层：
+
+1. 形成层叠上下文的元素的背景和边框。
+
+1. 层叠级别为负值的子层叠上下文。
+
+1. 普通流中非行内非定位的子元素。
+
+1. 非定位的浮动。
+
+1. 普通流中行内非定位子元素（包括inline tables和inline blocks）组成的层。
+
+1. 层叠级别是0的子层叠上下文，以及层叠级别是0的定位子元素。
+
+1. 层叠级别为正值的子层叠上下文。
+
+_PS: 来自问help的示意图：_
+
+![示意图](http://www.w3help.org/zh-cn/kb/013/013/stacklevel.png)
+
+在每一个层叠上下文中，层叠级别是0的定位元素，非定位的浮动，inline blocks和inline tables，是被显示成如同他们自身创建了新的层叠上下文一样，除了他们的定位子元素和任何可能的当前层叠上下文的子层叠上下文。
+
+显示的顺序是有每一个层叠上下文决定的。层叠上下文有关的比较详细的部分请参见[层叠上下文的详细描述](http://www.w3.org/TR/CSS21/zindex.html)。
+
+_在接下来的示例中，盒的层叠级别是：text2=0, image=1, text3=2, text1=3.text2的层叠级别是继承自根元素形成的盒。其他的都是通过z-index属性指定的。_
+
+```html
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN">
+<HTML>
+  <HEAD>
+    <TITLE>Z-order positioning</TITLE>
+    <STYLE type="text/css">
+      .pile { 
+        position: absolute; 
+        left: 2in; 
+        top: 2in; 
+        width: 3in; 
+        height: 3in; 
+      }
+    </STYLE>
+  </HEAD>
+  <BODY>
+    <P>
+      <IMG id="image" class="pile" 
+           src="butterfly.png" alt="A butterfly image"
+           style="z-index: 1">
+
+    <DIV id="text1" class="pile" 
+         style="z-index: 3">
+      This text will overlay the butterfly image.
+    </DIV>
+
+    <DIV id="text2">
+      This text will be beneath everything.
+    </DIV>
+
+    <DIV id="text3" class="pile" 
+         style="z-index: 2">
+      This text will underlay text1, but overlay the butterfly image
+    </DIV>
+  </BODY>
+</HTML>
+```
+
+这个例子演示了透明（transparency）的概念。background默认的行为是允许其之后的盒可见。在这个例子中，每一个盒子透明覆盖在其之下的盒。这种行为可以使用已存在的‘background属性’来重写。
+
+### 最后关于文本方向的：direction和unicode-bidi属性，请参见[文本方向](http://www.w3.org/TR/CSS21/visuren.html#direction)
