@@ -332,4 +332,4 @@ min-width，max-width如果是负值的话是不合法的。
 
 从下边的table中选择可以适当的违反约束constraint violation来计算height和width的值。就拿max-width和max-height为max(min,max)，控制min ≤ max。在表中，w和h是代表忽略min-width,min-height, max-width和max-height的属性的情况下计算的width和height的结果。通常会有原始的width和height，但是他们可能不在替换元素且有原始比例的这种情况下。
 
-![表]()
+![表](https://github.com/dolymood/blog/raw/master/pics/002.png)
