@@ -733,4 +733,4 @@ _注意在table上下文中，这个属性有不同的含义。_
 
 一个inline-table的baseline就是这个table的第一行的baseline。
 
-一个inline-block的baseline就是在普通流中的最后一个行盒的baseline，除非他没有在普通流中的行盒或者他的overflow的属性的计算值不是visible，在这种情况下baseline就是bottommargin的边界。
+一个inline-block的baseline就是在普通流中的最后一个行盒的baseline，除非他没有在普通流中的行盒或者他的overflow的属性的计算值不是visible，在这种情况下baseline就是bottom margin的边界。
