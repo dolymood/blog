@@ -87,7 +87,7 @@ _通过给em1定位，他的包含块就成了最近的定位的祖先盒了。_
 
 * __width__
 	
-	_值：_  <length> | <percentage> | auto | inherit
+	_值：_  <数值length> | <百分比percentage> | auto | inherit
 
 	_初始化：_ auto
 
@@ -108,11 +108,11 @@ _通过给em1定位，他的包含块就成了最近的定位的祖先盒了。_
 width的值有如下意思：
 
 
-* __<length>__
+* __<数值length>__
 	
 	使用一个绝对单位的值指定内容区域的宽度。
 
-* __<percentage>__
+* __<百分比percentage>__
 	
 	使用一个百分比宽。百分比的值是根据他的包含块的宽计算的。如果包含块的块取决于当前元素的宽的话，那么在CSS2.1中布局出来的结果就是undefined。
 
@@ -274,7 +274,7 @@ width的使用值用‘行内替换元素’中的规则确定。然后用‘非
 
 * __min-width__
 	
-	_值：_  <length> | <percentage> | inherit
+	_值：_  <数值length> | <百分比percentage> | inherit
 
 	_初始化：_ 0
 
@@ -290,7 +290,7 @@ width的使用值用‘行内替换元素’中的规则确定。然后用‘非
 
 * __max-width__
 	
-	_值：_  <length> | <percentage> | none | inherit
+	_值：_  <数值length> | <百分比percentage> | none | inherit
 
 	_初始化：_ none
 
@@ -306,11 +306,11 @@ width的使用值用‘行内替换元素’中的规则确定。然后用‘非
 
 这两个属性允许作者使得内容宽在一个确定的范围中。他们的值有如下意思：
 
-* __<length>__
+* __<数值length>__
 	
 	为使用的宽指定一个固定的最小或者最大值。
 
-* __<percentage>__
+* __<百分比percentage>__
 	
 	指定百分比。百分比的值是根据他生成盒的包含块的宽计算的。如果包含块的宽是负值的话，那么使用值就是0.如果包含块的宽取决于元素的宽的 话，那么在CSS2.1中布局出来的结果就是undefined。
 
@@ -342,7 +342,7 @@ min-width，max-width如果是负值的话是不合法的。
 
 * __height__
 	
-	_值：_  <length> | <percentage> | auto | inherit
+	_值：_  <数值length> | <百分比percentage> | auto | inherit
 
 	_初始化：_ auto
 
@@ -363,11 +363,11 @@ min-width，max-width如果是负值的话是不合法的。
 height的值有如下意思：
 
 
-* __<length>__
+* __<数值length>__
 	
 	使用一个绝对单位的值指定内容区域的高度。
 
-* __<percentage>__
+* __<百分比percentage>__
 	
 	使用一个百分比宽。百分比的值是根据他的包含块的高计算的。如果包含块的高没有明确指定的话，且这个元素不是绝对定位的，计算值将是auto。根元素上的百分比的高的计算是相对于初始包含块。_注意：针对于其包含块是基于块级元素的绝对定位元素来说，百分比的计算是相对于那个元素的padding盒的高度的。_
 
@@ -528,7 +528,7 @@ height不起作用。当前内容的高需要以font为基础的，但是在本�
 
 * __min-height__
 	
-	_值：_  <length> | <percentage> | inherit
+	_值：_  <数值length> | <百分比percentage> | inherit
 
 	_初始化：_ 0
 
@@ -544,7 +544,7 @@ height不起作用。当前内容的高需要以font为基础的，但是在本�
 
 * __max-height__
 	
-	_值：_  <length> | <percentage> | none | inherit
+	_值：_  <数值length> | <百分比percentage> | none | inherit
 
 	_初始化：_ none
 
@@ -560,11 +560,11 @@ height不起作用。当前内容的高需要以font为基础的，但是在本�
 
 这两个属性允许作者使得内容高在一个确定的范围中。他们的值有如下意思：
 
-* __<length>__
+* __<数值length>__
 	
 	指定一个固定的最小或者最大的计算的高。
 
-* __<percentage>__
+* __<百分比percentage>__
 	
 	指定百分比。百分比的值是根据他生成盒的包含块的高计算的。如果包含块的高没有明确指定的话，且这个元素不是绝对定位的，那么百分比的值就为0（针对于min-height）或者none（针对于max-height）。
 
@@ -589,3 +589,148 @@ min-height，max-height如果是负值的话是不合法的。
 ### 行高计算：line-height和vertical-align属性
 
 如同在‘IFC’段落中描述的那样，用户代理将行内级盒排列到一个垂直的行盒的层叠中。一个行盒的高按照如下来确定：
+
+1. 每一个在行盒中的行内级的盒的高都是要计算的。对于替换元素，inline-block元素以及inline-table元素来说，就是他们的margin盒的高；对于行内盒，就是他们的line-height。
+
+1. 行内级盒在垂直方向的对齐取决于他们的vertical-align属性的。在他们以top或者bottom对齐的情况下，他们必须对齐的使得行盒的高最小。如果这样的盒够高的话，没有更多的解决方案且CSS2.1中没有定义行盒的baseline的位置。
+
+1. 行盒的高是最上边盒的顶部到最下边盒的底部之间的距离。
+
+空的行内元素会生成一个空的行内盒，但是这些盒依旧会有margin，padding，border和行高，就好像他们有内容那样来计算。
+
+#### 行间距leading和半行间距half-leading
+
+CSS声明了每一个font都有font度量，用来指定一个字符在baseline之上高和在baseline之下的的深。在这段中我们使用A代表那个高（针对一个给定font且给定尺寸了）且用D代表那个深。我们同时定义`AD = A + D`，顶部到底部的距离。注意这些是font的整体的度量标准，不需要对任何的字形做上伸ascender或者下伸descender。
+
+用户代理将一个非替换行内元素和其他的每一个相关的baseline对齐。然后对于每一种字形，确定A和D。注意一个单独元素的字形可能来自不同的font，因此不需要他们有相同的A和D。如果行内盒没有包含任何字形，就考虑他包含了一个这个元素的第一个字形的A和D的strut支柱（具有零宽度的可见字形）。
+
+对于每一个字形，确定其行间距L，`L = line-height - AD`。半行间距就是A之上加上D之下的另一半，给定的字形行间距就是A的总高`= A + L/2`加上D的总深`= D + L /2`。
+
+_注意L可能是负值。_
+
+所有的字形的行内盒的高和他们每一边的半行间距之和才是真正的line-height。子元素盒不会影响这个高。
+
+尽管一个非替换元素的margin，border和padding不参与行盒的计算，他们仍然围绕着行内盒渲染。这意味着如果指定的line-height比容器盒的内容高要低的话，padding的background和border的color可能会“流出bleed”到毗邻的行盒中。用户代理应该按照文档中的顺序渲染盒。这回导致后续行的border渲染到那些border之上以及在之前行的文本之上。
+
+_注意，CSS2.1中没有定义一个行内盒的内容区域，因此不同的用户代理可能在不同的地方渲染background和border。_
+
+* __line-height__
+	
+	_值：_  normal | <数字number> | <数值length> | <百分比percentage> | inherit
+
+	_初始化：_ normal
+
+	_应用在：_ 一切元素
+
+	_可继承：_ 是
+
+	_百分比：_ 根据元素自身的font size
+
+	_媒介：_ 可见媒介
+
+	_计算值：_ 对于<数值length>和<百分比percentage>来说就是绝对的值；其他和指定值一样
+
+对于一个内容由行内级元素组成的块容器元素来说，line-height指定了这个元素内行盒的最小高。最小高由baseline之上的最小高和baseline之下的最小深构成，就像每一个行盒都是以一个零宽度的行内盒，这个元素的font以及行高属性开始的。我们称之为虚盒“支柱”。
+
+指定一个font的baseline之上的高和baseline之下的深的度量标准是在一个font中包含着的。
+
+对于非替换行内元素，line-height指定了计算行盒高所使用的高。
+
+这个属性的值有如下意思：
+
+* __normal__
+	
+	告诉用户代理根据这个元素的font的“合理的reasonable”值作为使用值。这个值和<数字number>同样的含义。我们建议‘normal’的使用值在1.0到1.2之间。计算值是normal。
+
+* __<数值length>__
+	
+	指定计算行盒高使用的值。负值是不合法的。
+
+* __<数字number>__
+	
+	这个属性的使用值是当前元素的font size和这个值number的乘积。负值是不合法的。计算值和指定值一样。
+
+* __<百分比percentage>__
+	
+	这个属性的计算值是当前元素的fong size和百分比的乘积。负值是不合法的。
+
+_下边的三条规则，计算出的行高是一样的：_
+
+```css
+div { line-height: 1.2; font-size: 10pt }     /* number */
+div { line-height: 1.2em; font-size: 10pt }   /* length */
+div { line-height: 120%; font-size: 10pt }    /* percentage */
+```
+当一个元素内包含的内容由多种字体渲染的时候，用户代理可以通过最大的font size来决定normal的line-height值。
+
+_注意：在一个块容器盒子中所有的行内盒的line-height只有一个值且他们的font是相同的（他们是非替换元素，inline-block元素等等），上述将确保连续行的baseline正好是分开的line-height。这在多列不同的font然后还要对齐的布局中是很重要的，例如在table中。_
+
+* __vertical-align__
+	
+	_值：_  baseline | sub | super | top | text-top | middle | bottom | text-bottom | <百分比percentage> | <数值length> | inherit
+
+	_初始化：_ baseline
+
+	_应用在：_ 行内级和table-cell元素
+
+	_可继承：_ 不可继承
+
+	_百分比：_ 根据元素自身的line-height
+
+	_媒介：_ 可见媒介
+
+	_计算值：_ 对于<数值length>和<百分比percentage>来说就是绝对的值；其他和指定值一样
+
+这个属性影响了在一个由行内级元素生成的行盒中的垂直定位。
+
+_注意在table上下文中，这个属性有不同的含义。_
+
+下边的这些值只对一个父级的行内元素或者父级块容器元素的‘支柱’有用。
+
+接下来的那些定义中，是针对于行内非替换元素，这个盒和高是line-height的盒（包含着盒的字形和每一边的半行间距，上边有介绍）对齐。对于其他的所有元素来说，这个盒是和margin盒对齐的。
+
+* __baseline__
+	
+	这个盒的baseline和父盒的baseline对齐。如果这个盒没有baseline，就拿他的bottom margin边界和父盒的baseline对齐。
+
+* __middle__
+	
+	这个盒的垂直的中间点和父盒的baseline加上父盒的x-height的一半对齐。。
+
+* __sub__
+	
+	这个盒的baseline降低到父盒的合适的下标的位置。（这个值对于这个元素文本的font size没有影响。）
+
+* __super__
+	
+	这个盒的baseline升高到父盒的合适的上标的位置。（这个值对于这个元素文本的font size没有影响。）
+
+* __text-top__
+	
+	这个盒的top和父盒的内容区域的top对齐。
+
+* __text-bottom__
+	
+	这个盒的bottom和父盒的内容区域的bottom对齐。
+
+* __<百分比percentage>__
+	
+	将这个盒子升高（正值）或者降低（负值）这个距离（line-height的百分比）。这个值如果是0%的话，那么就和baseline一样。
+
+* __<数值length>__
+
+	将这个盒子升高（正值）或者降低（负值）这个距离。这个值如果是0cm的话，那么就和baseline一样。
+
+接下来的这两个值是元素相对于行盒对齐的。由于这个元素可能会有相对于他对齐的孩子（反过来可能会有子孙相对于他们对齐），这些值使用对齐了的子树（aligned subtree）的边界。一个行内元素的对齐了的子树包含着那个元素以及他所有的vertical-align的计算值不是top或者bottom的所有行内元素孩子的对齐了的子树。对齐了的子树的top就是在这个子树中的最高的top值，bottom的值也是类似的。
+
+* __top__
+	
+	对齐了的子树的top和行盒的top对齐。
+
+* __bottom__
+	
+	对齐了的子树的bottom和行盒的bottom对齐。
+
+一个inline-table的baseline就是这个table的第一行的baseline。
+
+一个inline-block的baseline就是在普通流中的最后一个行盒的baseline，除非他没有在普通流中的行盒或者他的overflow的属性的计算值不是visible，在这种情况下baseline就是bottommargin的边界。
