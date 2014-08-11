@@ -126,3 +126,7 @@ body { height: 10em; }
 ```
 
 在这个例子中，scroller元素不会滚动satellite元素，因为latter的包含块是溢出要被裁切和滚动的元素的外边。
+
+#### 裁切：clip属性
+
+
