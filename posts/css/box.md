@@ -101,7 +101,7 @@ Margin属性指定了一个盒子的margin area的大小。'margin'简写属性�
 
 margin值可以是如下几个值：
 
-* __<宽度值（length）>__
+* __<宽度长度（length）>__
 	
 	指定的一个固定值。
 
@@ -261,7 +261,7 @@ padding属性指定了一个盒子的padding area的大小。'padding'简写属�
 
 padding值可以是如下几个值：
 
-* __<宽度值（length）>__
+* __<宽度长度（length）>__
 	
 	指定的一个固定值。
 
@@ -347,7 +347,7 @@ border width值可以是如下几个值：
 	
 	一个厚的border。
 
-* __<数值（length）>__
+* __<长度（length）>__
 
 	border的厚度有一个显式的值。显式的border宽度不能是负的。
 

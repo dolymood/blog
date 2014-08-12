@@ -254,7 +254,7 @@ img { display: none }      /* Do not display images */
 
 * __top__
 	
-	_值：_  <值length> | <百分比percentage> | auto | inherit
+	_值：_  <长度length> | <百分比percentage> | auto | inherit
 
 	_初始化：_ auto
 
@@ -272,7 +272,7 @@ img { display: none }      /* Do not display images */
 
 * __right__
 	
-	_值：_  <值length> | <百分比percentage> | auto | inherit
+	_值：_  <长度length> | <百分比percentage> | auto | inherit
 
 	_初始化：_ auto
 
@@ -290,7 +290,7 @@ img { display: none }      /* Do not display images */
 
 * __bottom__
 	
-	_值：_  <值length> | <百分比percentage> | auto | inherit
+	_值：_  <长度length> | <百分比percentage> | auto | inherit
 
 	_初始化：_ auto
 
@@ -308,7 +308,7 @@ img { display: none }      /* Do not display images */
 
 * __left__
 	
-	_值：_  <值length> | <百分比percentage> | auto | inherit
+	_值：_  <长度length> | <百分比percentage> | auto | inherit
 
 	_初始化：_ auto
 

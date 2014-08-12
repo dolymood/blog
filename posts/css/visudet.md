@@ -87,7 +87,7 @@ _通过给em1定位，他的包含块就成了最近的定位的祖先盒了。_
 
 * __width__
 	
-	_值：_  <数值length> | <百分比percentage> | auto | inherit
+	_值：_  <长度length> | <百分比percentage> | auto | inherit
 
 	_初始化：_ auto
 
@@ -108,7 +108,7 @@ _通过给em1定位，他的包含块就成了最近的定位的祖先盒了。_
 width的值有如下意思：
 
 
-* __<数值length>__
+* __<长度length>__
 	
 	使用一个绝对单位的值指定内容区域的宽度。
 
@@ -274,7 +274,7 @@ width的使用值用‘行内替换元素’中的规则确定。然后用‘非
 
 * __min-width__
 	
-	_值：_  <数值length> | <百分比percentage> | inherit
+	_值：_  <长度length> | <百分比percentage> | inherit
 
 	_初始化：_ 0
 
@@ -290,7 +290,7 @@ width的使用值用‘行内替换元素’中的规则确定。然后用‘非
 
 * __max-width__
 	
-	_值：_  <数值length> | <百分比percentage> | none | inherit
+	_值：_  <长度length> | <百分比percentage> | none | inherit
 
 	_初始化：_ none
 
@@ -306,7 +306,7 @@ width的使用值用‘行内替换元素’中的规则确定。然后用‘非
 
 这两个属性允许作者使得内容宽在一个确定的范围中。他们的值有如下意思：
 
-* __<数值length>__
+* __<长度length>__
 	
 	为使用的宽指定一个固定的最小或者最大值。
 
@@ -342,7 +342,7 @@ min-width，max-width如果是负值的话是不合法的。
 
 * __height__
 	
-	_值：_  <数值length> | <百分比percentage> | auto | inherit
+	_值：_  <长度length> | <百分比percentage> | auto | inherit
 
 	_初始化：_ auto
 
@@ -363,7 +363,7 @@ min-width，max-width如果是负值的话是不合法的。
 height的值有如下意思：
 
 
-* __<数值length>__
+* __<长度length>__
 	
 	使用一个绝对单位的值指定内容区域的高度。
 
@@ -528,7 +528,7 @@ height不起作用。当前内容的高需要以font为基础的，但是在本�
 
 * __min-height__
 	
-	_值：_  <数值length> | <百分比percentage> | inherit
+	_值：_  <长度length> | <百分比percentage> | inherit
 
 	_初始化：_ 0
 
@@ -544,7 +544,7 @@ height不起作用。当前内容的高需要以font为基础的，但是在本�
 
 * __max-height__
 	
-	_值：_  <数值length> | <百分比percentage> | none | inherit
+	_值：_  <长度ength> | <百分比percentage> | none | inherit
 
 	_初始化：_ none
 
@@ -560,7 +560,7 @@ height不起作用。当前内容的高需要以font为基础的，但是在本�
 
 这两个属性允许作者使得内容高在一个确定的范围中。他们的值有如下意思：
 
-* __<数值length>__
+* __<长度length>__
 	
 	指定一个固定的最小或者最大的计算的高。
 
@@ -616,7 +616,7 @@ _注意，CSS2.1中没有定义一个行内盒的内容区域，因此不同的�
 
 * __line-height__
 	
-	_值：_  normal | <数字number> | <数值length> | <百分比percentage> | inherit
+	_值：_  normal | <数字number> | <长度length> | <百分比percentage> | inherit
 
 	_初始化：_ normal
 
@@ -628,7 +628,7 @@ _注意，CSS2.1中没有定义一个行内盒的内容区域，因此不同的�
 
 	_媒介：_ 可见媒介
 
-	_计算值：_ 对于<数值length>和<百分比percentage>来说就是绝对的值；其他和指定值一样
+	_计算值：_ 对于<长度length>和<百分比percentage>来说就是绝对的值；其他和指定值一样
 
 对于一个内容由行内级元素组成的块容器元素来说，line-height指定了这个元素内行盒的最小高。最小高由baseline之上的最小高和baseline之下的最小深构成，就像每一个行盒都是以一个零宽度的行内盒，这个元素的font以及行高属性开始的。我们称之为虚盒“支柱”。
 
@@ -642,7 +642,7 @@ _注意，CSS2.1中没有定义一个行内盒的内容区域，因此不同的�
 	
 	告诉用户代理根据这个元素的font的“合理的reasonable”值作为使用值。这个值和<数字number>同样的含义。我们建议‘normal’的使用值在1.0到1.2之间。计算值是normal。
 
-* __<数值length>__
+* __<长度length>__
 	
 	指定计算行盒高使用的值。负值是不合法的。
 
@@ -667,7 +667,7 @@ _注意：在一个块容器盒子中所有的行内盒的line-height只有一�
 
 * __vertical-align__
 	
-	_值：_  baseline | sub | super | top | text-top | middle | bottom | text-bottom | <百分比percentage> | <数值length> | inherit
+	_值：_  baseline | sub | super | top | text-top | middle | bottom | text-bottom | <百分比percentage> | <长度length> | inherit
 
 	_初始化：_ baseline
 
@@ -679,7 +679,7 @@ _注意：在一个块容器盒子中所有的行内盒的line-height只有一�
 
 	_媒介：_ 可见媒介
 
-	_计算值：_ 对于<数值length>和<百分比percentage>来说就是绝对的值；其他和指定值一样
+	_计算值：_ 对于<长度length>和<百分比percentage>来说就是绝对的值；其他和指定值一样
 
 这个属性影响了在一个由行内级元素生成的行盒中的垂直定位。
 
@@ -717,7 +717,7 @@ _注意在table上下文中，这个属性有不同的含义。_
 	
 	将这个盒子升高（正值）或者降低（负值）这个距离（line-height的百分比）。这个值如果是0%的话，那么就和baseline一样。
 
-* __<数值length>__
+* __<长度length>__
 
 	将这个盒子升高（正值）或者降低（负值）这个距离。这个值如果是0cm的话，那么就和baseline一样。
 

@@ -57,7 +57,7 @@
 	
 	auto的行为由用户代理决定，但是针对于超出盒的情况的话应该提供滚动机制。
 
-即使overflow设置的是visible，内容还是可以通过本机操作环境将一个用户代理的文档窗口给截掉的。
+即使overflow设置的是visible，内容还是可以通过本机操作环境将一个用户代理截到文档窗口的。
 
 用户代理必须对viewport的根元素设置overflow属性。当根元素是一个HTML中的‘HTML’元素或者一个XHTML中的html元素，且这个元素有一个HTML的BODY元素或者XHTML的body子元素时，如果根元素上的overflow是visible的话，用户代理必须代替第一个这样的子元素上的overflow属性应用到viewport上（也就是将overflow用到viewport上）。用到viewport上的overflow必须是auto值。针对于这个传递的元素必须有一个使用值overflow：visible。
 
@@ -155,4 +155,110 @@ clip属性仅仅对于绝对定位元素有用。他的值有如下含义：
 
 * __<形状shape>__
 	
-	在CSS2.1中，仅仅可用的<形状shape>是:rect(top, right, bottom, left)，top和bottom指定了到这个盒的border边界的顶部的偏移量，right和left则是指定了这个盒的border边界的左边界的偏移量。作者应该按逗号分隔这几个值。
+	在CSS2.1中，仅仅可用的<形状shape>是:rect(top, right, bottom, left)，top和bottom指定了到这个盒的border边界的顶部的偏移量，right和left则是指定了这个盒的border边界的左边界的偏移量。作者应该按逗号分隔这几个偏移值。用户代理必须支持逗号分隔，但是也可以支持不用逗号分隔，因为本规范之前的规范是模棱两可的。
+
+	top、right、bottom和left可以是一个长度length也可以是auto。负的长度length是不可以的。值auto意味着裁切的区域大小和这个元素生成的border盒的边界一样。
+
+	当坐标接近像素级别坐标时，应该注意的是当left和right的值相同时没有像素是可见的（或者top和bottom的值是一样的），且相反的当这些值是auto时这个元素的border盒中的像素都是可见的。
+
+一个元素的裁切区域会裁掉这个元素在裁切区域之外的任何的方面（例如，内容，孩子，background，border，文本装饰，outline以及可视的滚动机制等任何的东东）。被裁切掉的内容不会导致overflow。
+
+这个元素的祖先也可以裁切掉他们内容的一部分（例如，通过他们的clip属性，如果他们的overflow属性不是visible）；渲染的就是累积的交集。
+
+如果裁切区域溢出了用户代理的文档窗口的边界，内容还是可以通过本机操作环境截到窗口的。
+
+_例子：下边的两条规则：_
+
+```css
+p#one { clip: rect(5px, 40px, 45px, 5px); }
+p#two { clip: rect(5px, 55px, 45px, 5px); }
+```
+
+_且假设p都是50 * 55像素的，会各自创建如下的dashed线确定的裁切区域的矩形：_
+
+![示意图](http://www.w3.org/TR/CSS21/images/clip.png)
+
+### 可见性：visibility属性
+
+* __visibility__
+	
+	_值：_  visible | hidden | collapse | inherit
+
+	_初始化：_ visible
+
+	_应用在：_ 所有元素
+
+	_可继承：_ 可以
+
+	_百分比：_ 不可用
+
+	_媒介：_ 可见媒介
+
+	_计算值：_ 和指定值一样
+
+visibility属性指定了一个元素创建的盒是否可见。不可见的盒子仍然影响布局。他的值有如下含义：
+
+* __visible__
+	
+	生成的盒可见。
+
+* __hidden__
+	
+	生成的盒不可见。
+
+* __collapse__
+	
+	请查阅在table中的‘动态行和列效果’段落。如果使用的元素不是rows、row groups、columns或者column groups，collapse和hidden是一个意思。
+
+这个属性可以用在利用脚本来创建动态效果。
+
+_在下边的例子中，按下form中的任何的button都会触发一个作者定义的导致相应的盒可见或者不可见的脚本函数。由于这些盒有相同的尺寸和位置，效果上来说就是一个代替另一个。_
+
+```html
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN">
+<HTML>
+<HEAD><TITLE>Dynamic visibility example</TITLE>
+<META 
+ http-equiv="Content-Script-Type"
+ content="application/x-hypothetical-scripting-language">
+<STYLE type="text/css">
+<!--
+   #container1 { position: absolute; 
+                 top: 2in; left: 2in; width: 2in }
+   #container2 { position: absolute; 
+                 top: 2in; left: 2in; width: 2in;
+                 visibility: hidden; }
+-->
+</STYLE>
+</HEAD>
+<BODY>
+<P>Choose a suspect:</P>
+<DIV id="container1">
+   <IMG alt="Al Capone" 
+        width="100" height="100" 
+        src="suspect1.png">
+   <P>Name: Al Capone</P>
+   <P>Residence: Chicago</P>
+</DIV>
+
+<DIV id="container2">
+   <IMG alt="Lucky Luciano" 
+        width="100" height="100" 
+        src="suspect2.png">
+   <P>Name: Lucky Luciano</P>
+   <P>Residence: New York</P>
+</DIV>
+
+<FORM method="post" 
+      action="http://www.suspect.org/process-bums">
+   <P>
+   <INPUT name="Capone" type="button" 
+          value="Capone" 
+          onclick='show("container1");hide("container2")'>
+   <INPUT name="Luciano" type="button" 
+          value="Luciano" 
+          onclick='show("container2");hide("container1")'>
+</FORM>
+</BODY>
+</HTML>
+```
