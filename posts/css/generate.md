@@ -66,7 +66,6 @@ _和下边的文档和样式表一样的效果：_
 
 ```
 <p><span>Some</span> Text </p>  
-
 span { display: block }
 ```
 
@@ -74,7 +73,6 @@ _类似的，下边的文档树和样式表：_
 
 ```
 <h2> Header </h2>     
-
 h2:after { display: block; content: 'Thing'; }
 ```
 
@@ -82,7 +80,6 @@ _和下边的文档树和样式表渲染的结果是一样的：_
 
 ```
 h2> Header <span>Thing</span></h2> 
-
 h2 { display: block; }
 span { display: block; }
 ```
