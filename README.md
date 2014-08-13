@@ -1,4 +1,4 @@
-小不点典的博客
+[小不点典的博客](http://blog.aijc.net)
 ====
 
 爱JavaScript CSS HTML
