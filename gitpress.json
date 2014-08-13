@@ -15,7 +15,7 @@
 		".*"                   : "text"
 	},
 	"title"       : "爱JC",
-	"order"       : "~number",
+	"order"       : "number",
 	"comment"     : {"type": "duoshuo", "short_name": "dolymood"},
 	"domain-alias": ["blog.aijc.net"],
 	"friends"  : [
