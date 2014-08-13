@@ -131,7 +131,7 @@ span { display: block; }
 
 * __no-open-quote and no-close-quote__
 	
-	没有内容，但是会递增（或者递减）嵌套quotes的级别。
+	没有内容，但是会递增（或者递减）嵌套quotes的层级。
 
 * __attr(X)__
 	
@@ -163,7 +163,89 @@ h1:before {
 
 ### 引用语标记（引号）
 
-在CSS2.1中，作者可以在样式敏感和上下文相关的规矩中指定用户代理如何渲染引用语标记。quotes属性指定了嵌入式引文的双引号级别。content属性可以访问这些引号使得他们和插入到一个引号之前和之后。
+在CSS2.1中，作者可以在样式敏感和上下文相关的规矩中指定用户代理如何渲染引用语标记。quotes属性指定了嵌入式引文的双引号层级。content属性可以访问这些引号使得他们和插入到一个引号之前和之后。
 
 #### 指定通过quotes属性指定quotes（引号）
 
+* __quotes__
+	
+	_值：_  [<字符串string> <字符串string>]+ | none | inherit
+
+	_初始化：_ 取决于用户代理
+
+	_应用在：_ 所有元素
+
+	_可继承：_ 可以
+
+	_百分比：_ 不可用
+
+	_媒介：_ 可见媒体
+
+	_计算值：_ 和指定值一样
+
+这个属性指定了任意数量嵌套的引用语标记。他的值有如下含义：
+
+
+* __none__
+	
+	content属性中的open-quote和close-quote的值不会产生任何的引用语标记。
+
+* _[<字符串string> <字符串string>]+_
+
+	content属性中的open-quote和close-quote的值来自于这个列表中的双引号。第一个（最左边）的那对代表引号的最外层，第二对就是嵌套的第一级等等。用户代理必须通过嵌套的等级来应用相应的一对引用语标记。
+
+_例如，应用下边的样式表：_
+
+```css
+/* Specify pairs of quotes for two levels in two languages */
+q:lang(en) { quotes: '"' '"' "'" "'" }
+q:lang(no) { quotes: "«" "»" '"' '"' }
+
+/* Insert quotes before and after Q element content */
+q:before { content: open-quote }
+q:after  { content: close-quote }
+```
+
+_到下边的HTML片段：_
+
+```html
+<HTML lang="en">
+  <HEAD>
+  <TITLE>Quotes</TITLE>
+  </HEAD>
+  <BODY>
+    <P><Q>Quote me!</Q>
+  </BODY>
+</HTML>
+```
+
+_将会使得用户代理产生：_
+
+```
+"Quote me!"
+```
+
+_这样的HTML片段：_
+
+```html
+<HTML lang="no">
+  <HEAD>
+  <TITLE>Quotes</TITLE>
+  </HEAD>
+  <BODY>
+    <P><Q>Trøndere gråter når <Q>Vinsjan på kaia</Q> blir deklamert.</Q>
+  </BODY>
+</HTML>
+```
+
+_将会产生：_
+
+```
+«Trøndere gråter når "Vinsjan på kaia" blir deklamert.»
+```
+
+#### 利用content属性插入quotes
+
+引用语标记是使用content属性的open-quote和close-quote值来插入到文档中的适当的位置。每一个出现的open-quote或者close-quote都会被quotes的一个值代替，基于嵌套的深度。
+
+open-quote引用第一对quotes，close-quote引用第二对。
