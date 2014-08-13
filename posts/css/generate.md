@@ -248,4 +248,4 @@ _将会产生：_
 
 引用语标记是使用content属性的open-quote和close-quote值来插入到文档中的适当的位置。每一个出现的open-quote或者close-quote都会被quotes的一个值代替，基于嵌套的深度。
 
-open-quote引用第一对quotes，close-quote引用第二对。
+open-quote引用第一对quotes，close-quote引用第二对。使用哪一对quotes取决于quotes嵌套的层级：
