@@ -359,3 +359,309 @@ H1 { counter-reset: section -1 imagenum 99 }
 
 #### 嵌套计数器和作用域
 
+计数器是"self-nesting自嵌套"的，从这个意义上来讲，重新在子元素或者伪元素上的计数器会自动创建一个新的计数器额实例。这是很重要的尤其是在HTML中的列表中，那些在他们自身之中可以嵌套任意深度的元素们。对于每一层级去创建唯一的命名计数器是不可能的。
+
+_因此，下边的就满足了多层嵌套列表项的计数。这个结果和在li元素上这是display:list-item和list-style:inside很像：_
+
+```css
+OL { counter-reset: item }
+LI { display: block }
+LI:before { content: counter(item) ". "; counter-increment: item }
+```
+
+每一个计数器的作用域在文档中的第一个元素开始，这个元素有这个计数器的counter-reset且包含了这个元素的后代和他的后代之后的同级元素们。然而，他不包含一个计数器（和之后这个元素的同级兄弟元素或者之后这个 由创建counter-reset的具有相同名字的计数器）的作用域中其他任何元素。
+
+如果一个元素或者伪元素上的counter-increment或者content引用了一个不在任何任何counter-reset作用域上的计数器的话，实现上的行为应该和在这个元素或者伪元素上设置了counter-reset为0一样。
+
+在上边的例子中，OL会创建一个计数器，他的所有的孩子都会应用那个计数器。
+
+_如果我们用item[n]表示item计数器的第n<sup>th</sup>个实例，且用{和} 表示这个作用域的开始和结束的话，那么下边的HTML片段会使用指示的计数器（我们假设样式表和上边的一样）。_
+
+```html
+<OL>                    <!-- {item[0]=0        -->
+  <LI>item</LI>         <!--  item[0]++ (=1)   -->
+  <LI>item              <!--  item[0]++ (=2)   -->
+    <OL>                <!--  {item[1]=0       -->
+      <LI>item</LI>     <!--   item[1]++ (=1)  -->
+      <LI>item</LI>     <!--   item[1]++ (=2)  -->
+      <LI>item          <!--   item[1]++ (=3)  -->
+        <OL>            <!--   {item[2]=0      -->
+          <LI>item</LI> <!--    item[2]++ (=1) -->
+        </OL>           <!--                   -->
+        <OL>            <!--   }{item[2]=0     -->
+          <LI>item</LI> <!--    item[2]++ (=1) -->
+        </OL>           <!--                   -->
+      </LI>             <!--   }               -->
+      <LI>item</LI>     <!--   item[1]++ (=4)  -->
+    </OL>               <!--                   -->
+  </LI>                 <!--  }                -->
+  <LI>item</LI>         <!--  item[0]++ (=3)   -->
+  <LI>item</LI>         <!--  item[0]++ (=4)   -->
+</OL>                   <!--                   -->
+<OL>                    <!-- }{item[0]=0       -->
+  <LI>item</LI>         <!--  item[0]++ (=1)   -->
+  <LI>item</LI>         <!--  item[0]++ (=2)   -->
+</OL>                   <!--                   -->
+```
+
+_下边的是另外一个例子，展示了当计数器使用在了不嵌套的元素上时作用域scope是怎样工作的。这展示了上边的计数章节和段落的样式表是如何应用给定标记的。_
+
+```html
+                     <!--"chapter" counter|"section" counter -->
+<body>               <!-- {chapter=0      |                  -->
+  <h1>About CSS</h1> <!--  chapter++ (=1) | {section=0       -->
+  <h2>CSS 2</h2>     <!--                 |  section++ (=1)  -->
+  <h2>CSS 2.1</h2>   <!--                 |  section++ (=2)  -->
+  <h1>Style</h1>     <!--  chapter++ (=2) |}{ section=0      -->
+</body>              <!--                 | }                -->
+```
+
+counters()函数生成一个由作用域中的所有的具有相同名字的计数器组成的字符串，按给定的字符串分隔。
+
+_下边的样式表计数了嵌套列表项，像1, 1.1, 1.1.1这样。_
+
+```css
+OL { counter-reset: item }
+LI { display: block }
+LI:before { content: counters(item, ".") " "; counter-increment: item }
+```
+
+#### 计数器样式
+
+默认，计数器被格式化为十进制数字，但是对于list-style-type属性可用的值也同样适用于计数器的样式。该表示法是：
+
+	counter(name)
+
+对于默认样式，或者：
+
+	counter(name, <列表样式类型list-style-type>)
+
+所有的样式都是允许的，包括disc，circle，square和none。
+
+```css
+H1:before        { content: counter(chno, upper-latin) ". " }
+H2:before        { content: counter(section, upper-roman) " - " }
+BLOCKQUOTE:after { content: " [" counter(bq, lower-greek) "]" }
+DIV.note:before  { content: counter(notecntr, disc) " " }
+P:before         { content: counter(p, none) }
+```
+
+#### display:none元素的计数器
+
+一个不能显示的（display:none）的元素不能increment增加或者reset重置一个计数器。
+
+_例如，使用下边的样式表，带有class属性是secret的H2元素不会增加count2_
+
+```css
+H2.secret {counter-increment: count2; display: none}
+```
+
+不能生成的伪元素同样不能增加或者重置一个计数器。
+
+_例如，下边的就不会增加heading_
+
+```css
+h1::before {
+    content: normal;
+    counter-increment: heading;
+}
+```
+
+另一方面，元素设置了visibility:hidden，是会增加计数器的。
+
+### 列表
+
+CSS2.1中提供了基本的可视化列表。一个元素的display:list-item就会为元素的内容生成一个主块盒，且会根据list-style-type和list-style-image可能会生成一个标记盒作为一个列表项元素的可见的表示。
+
+list属性描述了列表的基本的可视格式化：他们允许样式表指定标记的样子（image，glyph或者number），且标记的位置是相对于主盒的（在他外边或者在他里边但是在内容之前）。他们不允许作者对列表标记指定独特样式（color，font等）或者调整他相对主盒的位置；这些可能从主盒得到。
+
+background属性只能应用到主盒上；一个outside的标记盒是透明的。
+
+#### 列表：list-style-type，list-style-image，list-style-position和list-style属性
+
+* __list-style-type__
+	
+	_值：_  disc | circle | square | decimal | decimal-leading-zero | lower-roman | upper-roman | lower-greek | lower-latin | upper-latin | armenian | georgian | lower-alpha | upper-alpha | none | inherit
+
+	_初始化：_ disc
+
+	_应用在：_ display:list-item的元素
+
+	_可继承：_ 可以
+
+	_百分比：_ 不可用
+
+	_媒介：_ 可见媒体
+
+	_计算值：_ 和指定值一样
+
+这个属性指定了列表项标记（如果list-style-image是none或者图片的URI不能显示）的外观。none指定的是没有标记，其他情况他们有三种标记类型：glyphs字形, numbering systems计数系统和alphabetic systems字母系统。
+
+字形可以用disc，circle和square指定。他们实际上渲染的样子取决于用户代理。
+
+计数系统可以用如下的值指定：
+
+* __decimal__
+
+	十进制数字，以1开始。
+
+* __decimal-leading-zero__
+
+	由初始的0填充的十进制数字（01, 02, 03, ..., 98, 99）。
+
+* __lower-roman__
+
+	小写的罗马数字（i, ii, iii, iv, v等）。
+
+* __upper-roman__
+
+	大写的罗马数字（I, II, III, IV, V等）。
+
+* __georgian__
+
+	传统的格鲁吉亚编号（an, ban, gan, ..., he, tan, in, in-an, ...）。
+
+* __armenian__
+	
+	传统的大写亚美尼亚编号。
+
+字母系统可以用如下值指定：
+
+* __lower-latin或者lower-alpha__
+	
+	小写的ascii字母（a, b, c, ... z）。
+
+* __upper-latin或者upper-alpha__
+	
+	大写的ascii字母（A, B, C, ... Z）。
+
+* __lower-greek__
+
+	小写的古典希腊 alpha， beta， gamma...（α, β, γ, ...）。
+
+本规范没有定义字母系统怎样包装末尾的字母。例如，在26个列表项之后，小写拉丁文渲染时未定义的，对于常列表，我们建议作者指定真实数字。
+
+CSS2.1没有定义列表计数如何重置或者增加的。希望可以在CSS的列表模块定义[CSS3LIST](http://www.w3.org/TR/CSS21/refs.html#ref-CSS3LIST)。
+
+_例如，下边的HTML片段：_
+
+```html
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN">
+<HTML>
+   <HEAD>
+     <TITLE>Lowercase latin numbering</TITLE>
+     <STYLE type="text/css">
+          ol { list-style-type: lower-roman }   
+     </STYLE>
+  </HEAD>
+  <BODY>
+    <OL>
+      <LI> This is the first item.
+      <LI> This is the second item.
+      <LI> This is the third item.
+    </OL>
+  </BODY>
+</HTML>
+```
+
+_可以产生如下样子：_
+
+```
+  i This is the first item.
+ ii This is the second item.
+iii This is the third item.
+```
+
+_列表标记对齐（这里 右对齐）取决于用户代理。_
+
+* __list-style-image__
+	
+	_值：_  <统一资源标识符uri> | none | inherit
+
+	_初始化：_ none
+
+	_应用在：_ display:list-item的元素
+
+	_可继承：_ 可以
+
+	_百分比：_ 不可用
+
+	_媒介：_ 可见媒体
+
+	_计算值：_ 绝对的URI或者none
+
+这个属性指定了列表项标记使用的图片。当图片可用时，他就会代替list-style-type中的标记。
+
+图片尺寸计算遵循如下规则：
+
+1. 如果图片有固有的宽和高，那么使用的宽和高就是固有的宽和高。
+
+1. 其他情况，如果图片有一个固有的比例且有固有的高或者宽，使用的宽/高和提供的宽/高相同，且使用的丢失的那个尺寸通过尺寸和固有比例计算出来。
+
+1. 其他情况，如果图片有固有比例，使用宽是1em，且使用的高是利用这个宽和固定比例计算出来的。如果这个计算出的高比1em大的话，那么使用的高设置为1em，然后计算宽。
+
+1. 其他情况，如果他有固有宽就用固有宽或者1em。图片的使用的高就是如果他有固有的高的话就使用它或者1em.
+
+_下边的例子设置了每一个列表项之前的标记是图片ellipse.png_
+
+```css
+ul { list-style-image: url("http://png.com/ellipse.png") }
+```
+
+* __list-style-position__
+	
+	_值：_  inside | outside | inherit
+
+	_初始化：_ outside
+
+	_应用在：_ display:list-item的元素
+
+	_可继承：_ 可以
+
+	_百分比：_ 不可用
+
+	_媒介：_ 可见媒体
+
+	_计算值：_ 和指定值一样
+
+这个属性指定了标记盒相对于主盒的位置。他的值有如下含义：
+
+* __outside__
+
+	标记盒在主盒之外。
+
+* __inside__
+
+	标记盒以主盒中的第一个行内盒放置，在元素内容之前且在任何伪元素之前。
+
+_例如：_
+
+```html
+<HTML>
+  <HEAD>
+    <TITLE>Comparison of inside/outside position</TITLE>
+    <STYLE type="text/css">
+      ul         { list-style: outside }
+      ul.compact { list-style: inside }
+    </STYLE>
+  </HEAD>
+  <BODY>
+    <UL>
+      <LI>first list item comes first
+      <LI>second list item comes second
+    </UL>
+
+    <UL class="compact">
+      <LI>first list item comes first
+      <LI>second list item comes second
+    </UL>
+  </BODY>
+</HTML>
+```
+_上边的示例可以格式化为：_
+
+![示意图](http://www.w3.org/TR/CSS21/images/list-inout.png)
+
+_在由右到左的文本中，标记就会在文本的右边_
+
+
