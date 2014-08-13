@@ -123,7 +123,7 @@ span { display: block; }
 
 * __<计数器counter>__
 	
-	可以通过两种不同的方法指定：counter()或者counters()。之前的这个有两中形式：counter(name)或者counter(name, style)。生成的文本就是这个伪元素所在的作用域中出现的name的最里边的次数的值；他是以指定的style格式化（默认decimal十进制）。后边的函数也有两种形式：counters(name, string)或者counters(name, string, style)。生成的文本就是这个伪元素所在的作用域中出现的name的总共的次数的值，按照string分隔从最外边到最里边。counters也是以指定的style格式化（默认decimal十进制）。请看下边的‘自动计数和编号’段落了解更多。name的值不能是none、inherit或者initial。这样的name会导致声明被拒绝（无效）。
+	可以通过两种不同的方法指定：counter()或者counters()。之前的这个有两中形式：counter(name)或者counter(name, style)。生成的文本就是这个伪元素所在的作用域中出现的name的最里边的次数的值；他是以指定的style格式化（默认decimal十进制）。后边的函数也有两种形式：counters(name, string)或者counters(name, string, style)。生成的文本就是这个伪元素所在的作用域中出现的name的总共的次数的值，按照string分隔从最外边到最里边。counters也是以指定的style格式化（默认decimal十进制）。请看下边的‘自动计数和编号’段落了解更多。name的值不能是none、inherit或者initial。这样的name会导致声明会忽略。
 
 * __open-quote 和 close-quote__
 	
@@ -248,4 +248,114 @@ _将会产生：_
 
 引用语标记是使用content属性的open-quote和close-quote值来插入到文档中的适当的位置。每一个出现的open-quote或者close-quote都会被quotes的一个值代替，基于嵌套的深度。
 
-open-quote引用第一对quotes，close-quote引用第二对。使用哪一对quotes取决于quotes嵌套的层级：
+open-quote引用第一对quotes，close-quote引用第二对。使用哪一对quotes取决于quotes嵌套的层级：在出现内容之前所有的生成文本open-quote出现的次数，减去close-quote出现的次数。如果深度为0，使用第一对，如果深度是1， 那么使用第二对，等等。如果深度比对总数还要大，最后的那对重复即可。一个close-quote或者no-close-quote可以使得深度是负值，这是错误的且会被忽略：深度保持在0，且没有引号渲染。
+
+一些在印刷商的样式需要open引号一直在每一个段落重复，跨越好几个段落，但是只有最后的段落以close引号结束。在CSS中，这可以通过插入"phantom"close引号获得。关键词no-close-quote可以降低引用层级，但是不会插入引号。
+
+_下边的样式表给每一个blockquote下的段落加上了一个open引号，且在最后插入了一个close引号：_
+
+```css
+blockquote p:before     { content: open-quote }
+blockquote p:after      { content: no-close-quote }
+blockquote p.last:after { content: close-quote }
+```
+
+_最后的段落需要一个class是last做标记。_
+
+为了对称，还有一个no-open-quote关键词，不会插入什么东西，但是会升高引用语深度加一。
+
+### 自动计数和编号
+
+在CSS2.1中自动编号由两个属性控制：counter-increment和counter-reset。这些属性定义的计数器在content属性中以counter()和counters()函数使用。
+
+
+* __counter-reset__
+	
+	_值：_  [ <标识符identifier> <整数integer>? ]+ | none | inherit
+
+	_初始化：_ none
+
+	_应用在：_ 所有元素
+
+	_可继承：_ 不可以
+
+	_百分比：_ 不可用
+
+	_媒介：_ 所有媒体
+
+	_计算值：_ 和指定值一样
+
+* __counter-increment__
+	
+	_值：_  [ <标识符identifier> <整数integer>? ]+ | none | inherit
+
+	_初始化：_ none
+
+	_应用在：_ 所有元素
+
+	_可继承：_ 不可以
+
+	_百分比：_ 不可用
+
+	_媒介：_ 所有媒体
+
+	_计算值：_ 和指定值一样
+
+counter-increment属性接收一个或者多个计数器的名字（标识符），每一个后边可选的跟着一个整数。这个整数按照每一个出现的元素的计数器增加了多少。默认的增量是1。0和负整数也是可以的。
+
+counter-reset属性页包含了一个或者多个计数器名字的列表，每一个后边可选的跟着一个整数。这个整数给定了每一个出现的元素设置的计数器的值。默认值是0。
+
+关键词none、inherit和initial不能作为计数器名字。如果值是none，意味着没有计数器重置、增加。如果值是inherit，那么就意味着有他自身通常的含义。initial是为了未来使用而保留的。
+
+_这个例子针线了一种计数章节和段落的方式。_
+
+```css
+BODY {
+    counter-reset: chapter;      /* Create a chapter counter scope */
+}
+H1:before {
+    content: "Chapter " counter(chapter) ". ";
+    counter-increment: chapter;  /* Add 1 to chapter */
+}
+H1 {
+    counter-reset: section;      /* Set section to 0 */
+}
+H2:before {
+    content: counter(chapter) "." counter(section) " ";
+    counter-increment: section;
+}
+```
+
+如果一个元素increment/reset一个计数器，且也使用了他（在:before和:after伪元素的content属性中），计数器是在incremented/reset之后使用。
+
+如果一个元素同时reset和increment一个计数器，这个计数器就先reset，然后incremented。
+
+如果同样的计数器在counter-reset喝counter-increment属性值中被指定了多次，这个计数器每一个reset/increment都是按照指定的顺序处理。
+
+_下边的例子会重置section计数器为0：_
+
+```css
+H1 { counter-reset: section 2 section }
+```
+
+_下边的例子会给chapter计数器增加3：_
+
+```css
+H1 { counter-increment: chapter chapter 2 }
+```
+
+counter-reset属性遵循层叠的规则。因此，由于层叠，下边的样式表：
+
+```css
+H1 { counter-reset: section -1 }
+H1 { counter-reset: imagenum 99 }
+```
+
+只会重置imagenum。为了重置两个计数器，他们必须一起制定：
+
+```css
+H1 { counter-reset: section -1 imagenum 99 }
+```
+
+#### 嵌套计数器和作用域
+
