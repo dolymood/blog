@@ -664,4 +664,90 @@ _上边的示例可以格式化为：_
 
 _在由右到左的文本中，标记就会在文本的右边_
 
+* __list-style__
+	
+	_值：_  [ <'list-style-type'> || <'list-style-position'> || <'list-style-image'> ] | inherit
 
+	_初始化：_ 参见单独的属性
+
+	_应用在：_ display:list-item的元素
+
+	_可继承：_ 可以
+
+	_百分比：_ 不可用
+
+	_媒介：_ 可见媒体
+
+	_计算值：_ 参见单独的属性
+
+list-style是一个简写属性，可以在样式表的同一个地方设置三个属性'list-style-type', 'list-style-image' 和 'list-style-position'。 
+
+```css
+ul { list-style: upper-roman inside }  /* Any "ul" element */
+ul > li > ul { list-style: circle outside } /* Any "ul" child 
+                                             of an "li" child 
+                                             of a "ul" element */
+```
+
+尽管作者可以直接在列表项元素（在HTML中的li）上指定list-style信息，他们应该小心的这样做。下边的规则看起来类似，但是第一个声明了一个后代选择符且第二个声明了一个子选择符。
+
+```css
+ol.alpha li   { list-style: lower-alpha } /* Any "li" descendant of an "ol" */ 
+ol.alpha > li { list-style: lower-alpha } /* Any "li" child of an "ol" */
+```
+
+只用了后代选择符的作者可能得到的不是他们想要的结果。看下边的规则：
+
+```html
+<HTML>
+  <HEAD>
+    <TITLE>WARNING: Unexpected results due to cascade</TITLE>
+    <STYLE type="text/css">
+      ol.alpha li  { list-style: lower-alpha }
+      ul li        { list-style: disc }
+    </STYLE>
+  </HEAD>
+  <BODY>
+    <OL class="alpha">
+      <LI>level 1
+      <UL>
+         <LI>level 2
+      </UL>
+    </OL>
+  </BODY>
+</HTML>
+```
+
+希望的渲染时有一个层级1的带着lower-alpha标签的列表项，且层级2的带着disc标签的列表项。然而，层叠次序会导致第一个样式规则覆盖掉第二个。接下来的规则通过替换为子选择符解决了这个问题：
+
+```css
+ol.alpha > li  { list-style: lower-alpha }
+ul li   { list-style: disc }
+```
+
+另一个解决方案就是仅仅给列表类型元素指定list-style：
+
+```css
+ol.alpha  { list-style: lower-alpha }
+ul        { list-style: disc }
+```
+
+LI元素会从OL和UL元素哪里继承list-style的值。这是指定列表样式信息推荐的做法。
+
+_一个URI的值可以和其他值合并的，像：_
+
+```css
+ul { list-style: url("http://png.com/ellipse.png") disc }
+```
+
+_上边的例子中，当这个图片不可用的时候就会使用disc。_
+
+在list-style中有none的值，不管设置到了list-style-type还是list-style-image，就不会有其他的值指定为none。然而，如果另外的也指定了，那么这个声明就是错误的（因此被忽略）。
+
+_例如，list-style属性的none将list-style-type和list-style-image都设置为了none：_
+
+```css
+ul { list-style: none }
+```
+
+_结果就是不会显示任何的列表项标记。_
