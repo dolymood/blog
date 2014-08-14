@@ -56,3 +56,64 @@
 
 	_计算值：_ 和指定值一样
 
+这个属性的值是一个font family名字（generic family名字）优先级列表。不像其他大多数的CSS属性，用逗号分隔的复合值，他们是可供选择的：
+
+```css
+body { font-family: Gill, Helvetica, sans-serif }
+```
+
+尽管很多的font提供了“缺失的字符”字形（典型的是一个开放的盒子），就像他的名字蕴含的当在这个font不能找到字符对应的匹配时才会考虑使用。（然而，他应该考虑匹配[U+FFFD](http://www.fileformat.info/info/unicode/char/0fffd/index.htm)，“缺失的字符”的字符的编码位置）。
+
+font family的名字有两种类型：
+
+* __\<family-name\>__
+
+	一个选择的fontfamily的名字。前面的例子中"Gill" and "Helvetica"是font family。
+
+* __\<generic-family\>__
+
+	前面的例子中sans-serif就是一个generic family名字。generic families定义如下：
+
+	* 'serif' (例如, Times)
+
+	* 'sans-serif' (例如, Helvetica)
+
+	* 'cursive' (例如, Zapf-Chancery)
+
+	* 'fantasy' (例如, Western)
+
+	* 'monospace' (例如, Courier)
+
+	样式表设计者鼓励在最后提供一个可选择的generic font family（通用字体）。generic font family的名字是关键词且绝对不能用引号包着。
+
+font family的名字可以用引号包着作为字符串，或者不用引号作为一系列的标识符。这意味着大多数的在每一个token开始位置的标点字符和数字必须转义成不带引号的fontfamily名字。
+
+例如，下边的声明都是不可用的：
+
+```css
+font-family: Red/Black, sans-serif;
+font-family: "Lucida" Grande, sans-serif;
+font-family: Ahem!, sans-serif;
+font-family: test@foo, sans-serif;
+font-family: #POUND, sans-serif;
+font-family: Hawaii 5-0, sans-serif;
+```
+
+如果一个font family的名字是一系列的标识符的话，这个名字的计算值就是转换为将序列中的标识符以单独空格连接在一起。
+
+为了避免转义错误，建议包含空格、逗号或者连接符以外的标点字符的font family的名字加上引号：
+
+```
+body { font-family: "New Century Schoolbook", serif }
+
+<BODY STYLE="font-family: '21st Century', fantasy">
+```
+
+font family的名字如果碰巧和关键词值（'inherit', 'serif', 'sans-serif', 'monospace', 'fantasy', 'cursive'）一样的话，必须用引号引起来，这样才能阻止同名的关键词混淆。关键词'initial'和'default'是保留着为了未来使用的，所以也必须用引号包着font名字。UA不能考虑将这些关键词来匹配'<font-family>'类型。
+
+#### generic font families 通用字体
+
+
+
+
+
