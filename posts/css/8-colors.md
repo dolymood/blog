@@ -21,14 +21,14 @@ CSS属性允许作者指定一个元素的前景色color和背景background。�
 
 	_计算值：_ 和指定值一样
 
+<!--more-->
+
 这个属性描述了一个元素文本内容的前景色。下边的是不同的方式来指定值为红色：
 
 ```css
 em { color: red }              /* predefined color name */
 em { color: rgb(255,0,0) }     /* RGB range 0-255   */
 ```
-
-<!--more-->
 
 ### 背景background
 
