@@ -42,7 +42,7 @@
 
 * __font-family__
 	
-	_值：_  [[ \<family-name\> | \<generic-family\> ] [, <\family-name\>| \<generic-family\>]* ] | inherit
+	_值：_  [[ \< family-name \> | \<generic-family\> ] [, <\family-name\>| \<generic-family\>]* ] | inherit
 
 	_初始化：_ 取决于用户代理
 
