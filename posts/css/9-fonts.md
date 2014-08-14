@@ -42,7 +42,7 @@
 
 * __font-family__
 	
-	_值：_  [[ \\<family-name\\> | \\<generic-family\\> ] [, \\<family-name\\>| \\<generic-family\\>]* ] | inherit
+	_值：_  [[ \<family-name\> | \<generic-family\> ] [, <\family-name\>| \<generic-family\>]* ] | inherit
 
 	_初始化：_ 取决于用户代理
 
@@ -66,11 +66,11 @@ body { font-family: Gill, Helvetica, sans-serif }
 
 font family的名字有两种类型：
 
-* __\\<family-name\\>__
+* __\<family-name\>__
 
 	一个选择的fontfamily的名字。前面的例子中"Gill" and "Helvetica"是font family。
 
-* __\\<generic-family\\>__
+* __\<generic-family\>__
 
 	前面的例子中sans-serif就是一个generic family名字。generic families定义如下：
 
