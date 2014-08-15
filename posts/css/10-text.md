@@ -2,7 +2,7 @@
 
 text相关的属性会在下边的段落中定义，他们影响了字符characters，空格spaces，单词words以及段落paragraphs的可视化表现。
 
-### 缩进：text-indent熟悉
+### 缩进：text-indent属性
 
 * __text-indent__
 	
