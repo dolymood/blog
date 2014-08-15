@@ -32,7 +32,7 @@ em { color: rgb(255,0,0) }     /* RGB range 0-255   */
 
 ### 背景background
 
-作者可以指定一个元素的背景，可以是颜色也可以是图片。依据[盒模型](http://blog.aijc.net/~posts/css/3-box.md)，background和content，padding以及border区域相关。border的颜色和样式通过border属性设置。margin通常都是透明的。
+作者可以指定一个元素的背景，可以是颜色也可以是图片。依据[盒模型](http://blog.aijc.net/~posts/css/003-box.md)，background和content，padding以及border区域相关。border的颜色和样式通过border属性设置。margin通常都是透明的。
 
 background属性不可以继承，但是父盒的背景默认可以透过=底层发亮，因为background-color的初始值是transparent。
 
