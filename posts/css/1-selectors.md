@@ -58,7 +58,7 @@
 
 > `:first-line` 设置元素的第一行的样式
 
-> `:first-letter` 设置元素的第一个字符的样式
+> `:first-letter` 设置元素的第一个字母的样式
 
 > `:before` 插入在元素内容之前的内容
 
