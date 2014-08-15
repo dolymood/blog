@@ -2,7 +2,7 @@
 
 ### 简介
 
-设置font属性会是样式表最常见的用途。不幸的是，不存在明确的和公认的分类法来分类font，且某一方面适用于一种font family字体名称序列不一定适用于其他的。例如，Italic通常用于标注斜体文本，但是斜体文本也可以通过Oblique, Slanted, Incline, Cursive或者Kursiv来标注。因此，这不是一个简单的问题将一个字体选择属性映射到一个特定的font上。
+设置font属性会是样式表最常见的用途。不幸的是，不存在明确的和公认的分类法来分类font，且某一方面适用于一种font family字体名称序列不一定适用于其他的。例如，Italic通常用于标注斜体文本，但是斜体文本也可以通过Oblique, Slanted, Incline, Cursive或者Kursiv来标注。因此，将一个字体选择属性映射到一个特定的font上不是一个简单的问题。
 
 ### font匹配算法
 
@@ -68,7 +68,7 @@ font family的名字有两种类型：
 
 * __< family-name >__
 
-	一个选择的fontfamily的名字。前面的例子中"Gill" and "Helvetica"是font family。
+	一个选择的font family的名字。前面的例子中"Gill" and "Helvetica"是font family。
 
 * __< generic-family >__
 
@@ -86,7 +86,7 @@ font family的名字有两种类型：
 
 	样式表设计者鼓励在最后提供一个可选择的generic font family（通用字体）。generic font family的名字是关键词且绝对不能用引号包着。
 
-font family的名字可以用引号包着作为字符串，或者不用引号作为一系列的标识符。这意味着大多数的在每一个token开始位置的标点字符和数字必须转义成不带引号的fontfamily名字。
+font family的名字可以用引号包着作为字符串，或者不用引号作为一系列的标识符。这意味着大多数的在每一个token开始位置的标点字符和数字必须转义成不带引号的font family名字。
 
 例如，下边的声明都是不可用的：
 
