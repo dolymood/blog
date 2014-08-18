@@ -1,5 +1,340 @@
 ## CSS 表格
 
-### 表格简介
+### 表格table简介
 
-_PS：未完待续..._
+本章定义了CSS中table的处理模型。处理模型的一部分是布局。对于布局，本章介绍了两种算法：第一，很好定义了的固定table布局算法；第二，自动table布局算法，在本规范中还没有完全的定义好。
+
+对于自动table布局算法，一些已发布的实现者已经了相对接近的互操作性。
+
+table布局可以用来变现数据之间的表格式的关系。作者在文档语言中指定这些关系，且可以使用CSS2.1指定他们的表现。
+
+<!--more-->
+
+在可见媒体上，CSS表格table也可以用于实现特殊的布局。在这种情况下，作者不应该在文档语言中使用table相关的元素，而应该应用CSS到相关的结构元素上来实现想要的布局。
+
+作者可以指定一个table的可视化格式（作为一个矩形的网格单元格）。单元格的行和列可以组织成为行组和列组。行、列、行组、列组以及单元格的周围可以有border（在CSS2.1中有2中border模型）。作者可以将一个单元格中的数据水平或者垂直对齐，且可以将一行或者一列中的所有的单元格中的数据对齐。
+
+_这里有一个简单的3行3列的表格：_
+
+```html
+<TABLE>
+<CAPTION>This is a simple 3x3 table</CAPTION>
+<TR id="row1">
+   <TH>Header 1  <TD>Cell 1  <TD>Cell 2
+<TR id="row2">
+   <TH>Header 2  <TD>Cell 3  <TD>Cell 4
+<TR id="row3">
+   <TH>Header 3  <TD>Cell 5  <TD>Cell 6
+</TABLE>
+```
+
+_上边的代码创建了一个table，3行，3个表头单元格，以及6个数据单元格。注意这个例子中的3列是这样指定实现的：在table中有很多列是作为表头和数据单元格而需要的。_
+
+_下边的CSS规则使得表头单元格中的文本水平居中且font weight是bold：_
+
+```css
+th { text-align: center; font-weight: bold }
+```
+
+_下边的规则指定了最上边的那一行会有3px的solid样式的蓝色border，每一行将会有一个1px的solid的黑色border：_
+
+```css
+table   { border-collapse: collapse }
+tr#row1 { border: 3px solid blue }
+tr#row2 { border: 1px solid black }
+tr#row3 { border: 1px solid black }
+```
+
+_注意，然而在行接触的地方他们的border是覆盖的。我们将在后端的‘border冲突解决方案’段落讨论。_
+
+_下边的规则将table的标题放在table之上：_
+
+```css
+caption { caption-side: top }
+```
+
+前面的示例展示了CSS如何和HTML4元素一起工作的；在HTML4中，各种各样的table元素（TABLE, CAPTION, THEAD, TBODY, TFOOT, COL, COLGROUP, TH以及TD）的语义都是很好定义过的。在其他的文档语言中（例如XML应用）就可能没有预定义的table元素。因此，CSS2.1中允许作者通过display属性来“映射”文档语言元素为table元素。例如，下边的规则使得FOO元素像是HTML的TABLE元素且BAR元素像是CAPTION元素：
+
+```css
+FOO { display : table }
+BAR { display : table-caption }
+```
+
+我们将会在下边的段落中讨论table元素语义。在本规范中，table元素术语指的是创建table涉及到的任何的元素。一个内部的table元素是指产生一个行、行组、列、列组或者单元格的元素。
+
+### CSS表格模型
+
+CSS表格模型是基于HTML4的表格模型的，在HTML4的表格模型中，一个表格的结构和表格视觉的布局是很接近的。在这种模型中，一个表格由一个可选的标题和任意单元格行。这个表格模型称为“行优先”因为作者在文档语言中明确的指定了行，不是列。只有所有的行都指定完了以后列才会由此推断出———每一行的第一个单元格属于第一列，第二个单元格属于第二列等等———。行和列可以按结构分组，且分组会反映在表现上（例如，一组行的周围可能会有一个border）。
+
+因此，表格模型由tables表格、captions标题、rows行、row groups行组（包含表头header groups和表尾footer groups）、columns列、 column groups列组和cells单元格组成。
+
+CSS模型不需要文档语言包含和那些组件中的每一个都相应的元素。对于没有预定义的table元素的文档语言（例如XML应用），作者必须映射文档语言元素到table元素；这可以通过display属性来做。下边的display的值指定了任意元素的表格格式化规则：
+
+* __table （在HTML中：TABLE）__
+
+	指定一个元素定义块级表格：他是参与在一个BFC中的一个矩形块。
+
+* __inline-table （在HTML中：TABLE）__
+
+	指定一个元素定义行内级表格：他是参与在一个IFC中的一个矩形块。
+
+* __table-row （在HTML中：TR）__
+
+	指定一个元素是多个单元格的组成的行。
+
+* __table-row-group （在HTML中：TBODY）__
+
+	指定一个元素是一个或者多个行组成的组。
+
+* __table-header-group （在HTML中：THEAD）__
+
+	和table-row-group很像，但是对于可视格式化，这个行组总是在其他所有的行、行组之前和任何的顶部标题之后显示。如果一个表格包含了多个display是table-header-group的元素，只有第一个是以头header来渲染的；其他的以table-row-group来渲染。
+
+* __table-footer-group （在HTML中：TFOOT）__
+
+	和table-row-group很像，但是对于可视格式化，这个行组总是在其他所有的行、行组之后和任何的低部标题之	前显示。如果一个表格包含了多个display是table-footer-group的元素，只有第一个是以尾footer来渲染的；其他的以table-row-group来渲染。
+
+* __table-column （在HTML中：COL）__
+
+	指定一个元素描述了多个单元格组成的列。
+
+* __table-column-group （在HTML中：COLGROUP）__
+
+	指定一个元素由一个或者多个列形成的组。
+
+* __table-cell （在HTML中：TD, TH）__
+
+	指定一个元素代表一个表格单元格。
+
+* __table-caption （在HTML中：CAPTION）__
+
+	指定一个表格的标题。所有的display是table-caption的元素必须渲染，如同下边‘可视化格式模型中的表格’章节所描述的那样。
+
+用这些display值替换的元素在布局期间以他们给定的display类型对待。例如，一个图片设置了display:table-cell将会填充可用的单元格空间，且他的尺寸可能对于表尺寸的算法有贡献，就如同一个普通的单元格。
+
+display设置为了table-column或者table-column-group的元素不会渲染，但是他们是有用的，因为他们可以有引起一个他们所代表的列的确定样式的属性。
+
+HTML4默认的样式表会使用如下值：
+
+```css
+table    { display: table }
+tr       { display: table-row }
+thead    { display: table-header-group }
+tbody    { display: table-row-group }
+tfoot    { display: table-footer-group }
+col      { display: table-column }
+colgroup { display: table-column-group }
+td, th   { display: table-cell }
+caption  { display: table-caption }
+```
+
+对于HTML表格元素，用户代理可以忽略这些display属性，因为HTML表格可以使用其他向后兼容的呈现算法来渲染。然而，这并不意味着阻止在HTML中的非表格元素使用display:table。
+
+### 列columns
+
+表格单元格可能属于两个上下文：行和列。然而，在源文档中的单元格是行的后代，永远不是列的后代。不过一些方面的单元格能受列属性的影响。
+
+下边应用到列和列组元素上的属性：
+
+* __border__
+
+	只有当表格元素的border-collapse属性的值是collapse的时候各式各样的border属性才会应用到列上。在那种情况下，设置在列和列组上的border通过选择每一个单元格边界的border样式的‘冲突解决方案算法’解决。
+
+* __background__
+
+	background背景属性设置了在列中的单元格的背景，但是只有单元格和行的背景是透明的情况下。请看下文的‘表格层和透明’。
+
+* __width__
+	
+	width属性给定了这个列的最小宽。
+
+* __visibility__
+	
+	如果列的visibility属性设置为了collapse，在列中的任何单元格都不会渲染，且跨越到其他列的单元格会被裁切掉。另外，表格的宽width是由列的占用的宽决定的。请看下边的‘动态效果’。其他的visibility的值没有任何效果。
+
+_这里有一些设置列属性的样式表的例子。前2个规则一起实现了HTML4中值为cols的“规则”属性。第3个规则使得totals列背景是蓝色的，最后的2个规则展示了怎样通过‘固定布局算法’来制作一个固定尺寸列宽。_
+
+```css
+col { border-style: none solid }
+table { border-style: hidden }
+col.totals { background: blue }
+table { table-layout: fixed }
+col.totals { width: 5em }
+```
+
+### 可视化格式模型中的表格
+
+在可视化格式模型中，一个表格可以表现得像一个块级或者行内级元素。
+
+在两种情况下，表格生成了一个主要的块盒称为，表格包裹盒table wrapper box（他包含了表格盒自身以及任何的标题盒）。表格盒是一个包含着表格的内部的表格盒的块级盒。标题盒是保留他们自己的内容content，padding，margin以及border区域，且以表格包裹盒内部普通块盒来渲染的块级盒。标题盒放在表格盒之前或者之后是由caption-side属性决定的。
+
+如果表格式块级的，那么表格包裹盒就是一个块盒；如果是行内级的话就是一个inline-block盒。表格包裹盒生成一个BFC。当对于inline-table的垂直对齐的时候使用表格盒。表格包裹盒的宽度就是在其内部的表格盒的border边界的宽。表格上的width和height属性是相对于表格包裹盒的包含块的，而不是表格包裹盒自身。
+
+TABLE元素的position，float，margin-*，top，right，bottom和left属性的计算值是使用在表格包裹盒上而不是表格盒；其他非继承的属性值则不是表格包裹盒。（表格TABLE元素值不使用在TABLE表格上也不使用在表格包裹盒上，使用的是他们的初始值。）
+
+![表格示意图](http://www.w3.org/TR/CSS21/images/table_container.png)
+
+#### 标题位置和对齐
+
+* __caption-side__
+	
+	_值：_  top | bottom | inherit
+
+	_初始化：_ top
+
+	_应用在：_ table-caption元素
+
+	_可继承：_ 可以
+
+	_百分比：_ 不可用
+
+	_媒介：_ 可见媒介
+
+	_计算值：_ 和指定值一样
+
+这个属性指定了标题盒对于表格盒的位置。他的值有如下含义：
+
+* __top__
+
+	把标题盒定位到表格盒之上。
+
+* __bottom__
+
+	把标题盒定位到表格盒之下。
+
+标题盒子中的标题内容的水平对齐使用text-align属性。
+
+_在这个例子中，caption-side属性使得标题放置在了表格下边。这个标题将会和表格的父元素一样宽，且标题文本是左对齐的。_
+
+```css
+caption { caption-side: bottom; 
+          width: auto;
+          text-align: left }
+```
+
+### 表格内容的可视化布局
+
+内部的表格元素生成带有content和border的矩形盒。单元格一样有padding。内部的表格元素没有margin。
+
+这些盒的可视化布局是由一个矩形（不规则的行和列网格）管理的。每一个盒占据所有的网格单元格，有下边的规则确定。这些规则不会应用到HTML4或者HTML早起的版本；HTML利用他自身的行和列跨度的限制。
+
+1. 每一个表格行盒占据网格单元格一行。所有的表格行盒一起按照源文档中的他们出现的顺序填满表格的顶部到底部。
+
+1. 行组占据着他包含的表格行相同的网格单元格。
+
+1. 列盒占据一个或者多个网格单元格的列。列盒按照他们出现的顺序一个挨着一个放置。第一个列盒可能在左边也可能在右边，这取决于表格上的direction属性的值。
+
+1. 列组盒占据他包含着的表格列相同的网格单元格。
+
+1. 单元格可以跨越几行或者几列。每一个单元格是一个矩形盒，一个或者多个网格单元格的宽和高。这个行中矩形的顶行通过这个单元格的父级决定。这个矩形必须离左边尽可能的远，但是在第一列中的部分单元格占据空间必须不能和其他的单元格盒重叠，且这个单元格必须在同一行中的所有的单元格（在源文档中之前更早的）的右边。如果这个位置会导致一个多列单元格重叠一个之前的多行单元格，CSS没有定义结果：实现者可以覆盖单元格也可以移动之后的单元格到右边来避免这样的重叠。（如果表格的direction属性值是ltr的情况下该约束有用，如果direction是rtl的话，将之前两句中的left和right互换。）
+
+1. 一个单元格盒不能扩展的超过一个表格或者一个行组的最后一个表格行盒；用户代理必须简短他直至他适合了。
+
+在‘折叠的border模型’中的行，列，行组和列组的边界和假设的单元格的border为中心的网格行一致。在‘分开的border模型中’，这个边界和单元格的border边界一致。
+
+_这里有一个说明规则5的示例。下边的(X)HTML：_
+
+```html
+<table>
+<tr><td>1 </td><td rowspan="2">2 </td><td>3 </td><td>4 </td></tr>
+<tr><td colspan="2">5 </td></tr>
+</table>
+```
+
+_用户代理可以随意的可见覆盖单元格，如同左边的图形，或者移动这个单元格避免可见重叠，如同右边的图形。_
+
+![示意图](http://www.w3.org/TR/CSS21/images/table-overlap.png)
+
+#### 表格层和透明
+
+为了达到找到每一个单元格背景的目的，不同的表格元素可以认为是在6层的叠加层上。在一个层中一个元素设置的背景只有当在其之上的层有透明背景的时候才可见。
+
+![层](http://www.w3.org/TR/CSS21/images/tbl-layers.png)
+
+1. 最下边的层是一个单独的平面，代表的是表格盒自身。像其他盒一样，他可以是透明的。
+
+1. 下一层包含着列组。每一个列组拓展自顶行的顶部单元格到底行的底部的单元格的且从他的最左边的列的左边界到最右边的列的右边界。背景background覆盖在这个列组中的所有的单元格的完全的整个区域，即使他们跨度超出了列组，但是在区域中的不同之处在于不会影响背景图的定位。
+
+1. 列组的上边是代表着列盒的区域。每一个列金额；列组一样高和列中的普通单元格一样宽。背景覆盖在列中出现的所有的单元格的完整区域，即使他们的跨度超出了列，但是在区域中的不同之处在于不会影响背景图的定位。
+
+1. 下一个就是包含着行组的层。每一个行组拓展自从第一列的最左边单元格的左上角到最后的列的最下边的右下角。
+
+1. 下一个就是包含着表格行的层。每一个行和行组是一样宽的且和在行中的普通单元格一样高。和列一样，背景覆盖在行中出现的所有的单元格的完整区域，即使他们的跨度超出了行，但是在区域中的不同之处在于不会影响背景图的定位。
+
+1. 最顶的层包含着单元格自身。如同图形所表现的，尽管所有的行包含着同样数目的单元格，并非每一个单元格有指定的内容。在‘分开的border模型’中，如果empty-cells属性的值是hide的话，这些空的单元格就会透明穿过单元格、行、行组、列和列组的背景，让表格背景透过展示。
+
+“丢失的单元格”是在行或者列网格中不被一个元素或者伪元素占用的单元格。丢失的单元格的渲染如同有一个匿名的table-cell盒占用了他们在网格中的位置。
+
+_下边的例子中，第一行包含了4个非空的单元格，但是第二行仅仅只包含了一个非空的单元格，因此表格背景透过来了，除了从第一行中跨进这一行的单元格。下边的HTML代码和样式规则_
+
+```html
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN">
+<HTML>
+  <HEAD>
+    <TITLE>Table example</TITLE>
+    <STYLE type="text/css">
+      TABLE  { background: #ff0; border: solid black;
+               empty-cells: hide }
+      TR.top { background: red }
+      TD     { border: solid black }
+    </STYLE>
+  </HEAD>
+  <BODY>
+    <TABLE>
+      <TR CLASS="top">
+        <TD> 1 
+        <TD rowspan="2"> 2
+        <TD> 3 
+        <TD> 4 
+      <TR>
+        <TD> 5
+        <TD>
+    </TABLE> 
+  </BODY>
+</HTML>
+```
+
+_可能格式化为：_
+
+![示意图](http://www.w3.org/TR/CSS21/images/tbl-empty.png)
+
+注意如果表格有border-collapse: separate，通过border-spacing属性给定的这个区域的背景往往是表格元素的背景。参见‘分开的border模型’。
+
+#### 表格宽度算法：table-layout属性
+
+由于CSS没有定义表格“最佳的”布局由于在很多种情况下，什么是最佳的是品味的问题。CSS没有定义当布局表格时用户代理必须遵守的约束条件。用户代理可以使用任何的他们希望这样做的算法，且可以自由的更喜欢渲染速度，超过精度，除了当选择了“固定布局算法”。
+
+注意本段覆盖了[之前章节](http://blog.aijc.net/~posts/css/005-visudet.md)‘计算width和margin’中描述的计算宽的规则。尤其是，如果表格的margin是0，且width是auto，表格是不会自动的将尺寸填充到他的包含块的。然而，一旦表格的width的计算值找到了，那么就应用之前章节中描述的规则。因此，例如，一个表格能通过设置margin的left和right的值是auto来实现居中。
+
+未来CSS的更新可能会介绍一些使得表格自动填充他们的包含块的方式。
+
+* __table-layout__
+	
+	_值：_  auto | fixed | inherit
+
+	_初始化：_ auto
+
+	_应用在：_ table和inline-table元素
+
+	_可继承：_ 不可以
+
+	_百分比：_ 不可用
+
+	_媒介：_ 可见媒介
+
+	_计算值：_ 和指定值一样
+
+table-layout属性控制用于布局表格单元格、行、和列的算法。他的值有如下含义：
+
+* __fixed__
+
+	使用固定的表格布局算法。
+
+* __auto__
+
+	使用任何自动表格布局算法。
+
+这两种算法在下边描述。
+
+##### 固定表格布局
+
