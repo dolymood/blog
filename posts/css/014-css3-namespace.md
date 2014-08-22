@@ -139,5 +139,5 @@ _例子5：_
 
 > * __toto|A__
 	
-		表示名字A在`http://toto.example.org`命名空间中
+> 	表示名字A在`http://toto.example.org`命名空间中
 
