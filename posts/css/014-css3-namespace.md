@@ -139,5 +139,45 @@ _例子5：_
 
 > * __toto|A__
 	
-> 	表示名字A在`http://toto.example.org`命名空间中
+> 	表示名字A在`http://toto.example.org`命名空间中。
 
+> * __|B__
+	
+> 	表示名字B属于无命名空间。
+
+> * __*|C__
+	
+> 	表示名字C在任何命名空间中，包含无命名空间。
+
+> * __D__
+	
+> 	表示名字D在`http://example.org/foo`命名空间中。
+
+在本地名字之前的CSS合法名字——允许通配符前缀（wqname）合法名字和不允许通配符前缀（qname）合法名字——的部分语法在下边给定。
+
+（这个语法使用[CSS2.1语法附录](http://www.w3.org/TR/CSS21/grammar.html)中的记法。注意这意味着注解
+——不是空格——是在标记token之间隐式允许的）：
+
+```
+qname_prefix
+  : namespace_prefix? '|'
+  ;
+wqname_prefix
+  : [ namespace_prefix? | '*' ] '|'
+  ;
+qname
+  : qname_prefix? ident
+  ;
+wqname
+  : wqname_prefix? ident
+  ;
+wqwname
+  : wqname_prefix? [ ident | '*' ]
+  ;
+```
+
+CSS合法名字能使用在（例如）选择符和属性值中，就像在其他模块中描述的那样。那些模块必须定义处理没有正确声明的命名空间前缀。这样的声明应该将未声明的命名空间前缀作为一个解析错误（那会导致在CSS中选择符或者声明等等被认为无效且会被忽略）来对待。
+
+_例子6：_
+
+> 例如，选择符模块定义带有未声明命名空间前缀的类型选择符为无效的选择符，且CSS需要带有无效选择符的样式规则完全被忽略。
