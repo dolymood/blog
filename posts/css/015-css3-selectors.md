@@ -191,7 +191,7 @@ h1
  h1 { color: green }
 ```
 
-> 第一条规则（不包括`@namespace`at规则）会匹配在‘http://www.example.com’命名空间中的`h1`元素。
+> 第一条规则（不包括`@namespace`at规则）会匹配在http://www.example.com命名空间中的`h1`元素。
 
 > 第二条规则会匹配在“http://www.example.com”命名空间中的所有元素。
 
