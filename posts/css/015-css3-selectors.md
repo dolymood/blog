@@ -44,7 +44,7 @@ CSS2和CSS3选择器之间主要的不同是：
 
 * 介绍了新的连接符
 
-* 包含子链匹配属性选择器和新的伪类的新的简单选择器
+* 包含子串匹配属性选择器和新的伪类的新的简单选择器
 
 * 新的伪元素和伪元素的"::"约定的介绍
 
@@ -150,7 +150,7 @@ h1
 
 #### 类型选择器和命名空间
 
-类型选择器允许可选的命名空间元件：一个已经被显示声明的可以插在用命名空间分隔符竖线（U+007C，|）分隔的元素名之前的命名空间前缀。
+类型选择器允许可选的命名空间元件：一个已经被显式声明的可以插在用命名空间分隔符竖线（U+007C，|）分隔的元素名之前的命名空间前缀。
 
 命名空间元件可以是空的（在命名空间分隔符之前没有前缀）表明这个选择器只能代表没有命名空间的元素。
 
@@ -307,4 +307,138 @@ DIALOGUE[character=romeo]
 DIALOGUE[character=juliet]
 ```
 
-#### 子链匹配属性选择器
+#### 子串匹配属性选择器
+
+提供了三个额外的属性选择器来匹配一个属性值的子串：
+
+* __[att^=val]__
+
+	代表了一个元素有att属性，且值是以前缀val开头。如果val是空字符串那么这个选择器不代表任何东西。
+
+* __[att$=val]__
+
+	代表了一个元素有att属性，且值是以后缀val结束。如果val是空字符串那么这个选择器不代表任何东西。
+
+* __[att*=val]__
+
+	代表了一个元素有att属性，且值至少包含了一个val子串实例。如果val是空字符串那么这个选择器不代表任何东西。
+
+属性值必须是CSS标识符或者字符串。在选择器中的属性名和值的大小写敏感性是取决于文档语言的。
+
+> 例子：
+
+> 接下来的选择器代表了一个HTML的`object`，引用一个图片：
+
+```css
+object[type^="image/"]
+```
+
+> 接下来的选择器代表了一个HTML的超链接`a`，其属性href的值以.html结尾：
+
+```css
+a[href$=".html"]
+```
+
+> 接下来的选择器代表了一个HTML的段落`p`，其属性title的值包含了子串hello
+
+```css
+p[title*="hello"]
+```
+
+#### 属性选择器和命名空间
+
+在一个属性选择器中的属性名是作为一个CSS合法名字（一个已经显式声明的命名空间前缀，可以通过命名空间分隔符竖线|分隔插入到属性名之前）给定的。复合XML中命名空间的建议，默认命名空间不会应用到属性上，因此没有命名空间元件的属性选择器只会应用到那些没有命名空间的属性上（等于`|attr`；这些属性被称为在“每个元素类型命名空间分区”中）。一个星号*可以用于命名空间前缀表明了这个选择器是匹配所有的不属于这个属性的命名空间的属性名。
+
+一个带有包含没有显式声明的命名空间前缀的属性名的属性选择器是无效的。
+
+> CSS例子：
+
+```css
+@namespace foo "http://www.example.com";
+[foo|att=val] { color: blue }
+[*|att] { color: yellow }
+[|att] { color: green }
+[att] { color: green }
+```
+
+> 第一条规则只会匹配属性att在`http://www.example.com`命名空间中且其值是val的元素。
+
+> 第二条规则只会匹配属性att，而不管这个属性的命名空间（包括没有命名空间）的元素。
+
+> 最后的两条规则是相等的，都只会匹配属性att不在任何命名空间中的元素。
+
+#### 在DTD（document type definition）中的默认属性值
+
+属性选择器代表了再文档树中的属性值。文档树是怎样结构化的，是在选择器的作用域之外的。在一些文档中格式化默认属性值能在DTD或者其他地方定义，但是这些只能被属性选择器选择，如果他们出现在文档树中的话。选择器应该设计为无论包不包含默认值，他们都可以在文档树中工作。
+
+例如，一个XML用户代理UA，但是不需要读DTD的“外部子集external subset”，但需要在文档的“内部子集internal subset”中查找默认属性值。在外部子集中定义一个默认属性值可以出现在文档树中，也可以不出现，这是取决于UA的。
+
+一个能识别XML命名空间的UA，但是不需要使用它的命名空间的知识来对待默认属性值就好像他们在文档中出现了一样。
+
+> 例子：
+
+> 考虑一个元素`EXAMPLE`，带有属性`radix`，他的默认值是decimal。DTD片段可能是
+
+```xml
+<!ATTLIST EXAMPLE radix (decimal,octal) "decimal">
+```
+
+> 如果样式表包含如下规则
+
+```css
+EXAMPLE[radix=decimal] { /*... default property settings ...*/ }
+EXAMPLE[radix=octal]   { /*... other settings...*/ }
+```
+
+> 第一条规则可能不会匹配`radix`属性默认（没有明显）设置了的元素。考虑所有的情况，对于默认值属性选择器应该被丢弃：
+
+```css
+EXAMPLE                { /*... default property settings ...*/ }
+EXAMPLE[radix=octal]   { /*... other settings...*/ }
+```
+
+> 这里，因为选择器`EXAMPLE[radix=octal]`不只是指定了单独的类型选择器，在第二条规则中声明的样式会覆盖第一条中匹配的那些有radix属性且值是octal的元素。在非默认情况下的样式规则中必须顾虑所有的只应用到默认情况的属性声明是会覆盖掉的。
+
+### 类选择器
+
+用HTML工作，当代表`class`属性时，作者可以使用“句点”符号（U+002E，.）作为一个可供选择的`~=`符号。因此，对于HTML，`div.value`和`div[class~=value]`有着同样的含义。属性值必须紧跟着.号。
+
+如果UA有命名空间特性且允许他来确定那个属性的class属性来代表命名空间的话，那么这个UA可以在XML文档中使用.来应用选择器。一个这样的命名空间特性知识例子就是在规范中部分命名空间的文章中（例如，SVG 1.0描述了SVG类class属性以及一个UA应该怎样来解释他）。
+
+> CSS例子：
+
+> 我们能通过如下方式来给所有的带有`class~="pastoral"`的元素指定样式信息：
+
+```css
+*.pastoral { color: green }  /* all elements with class~=pastoral */
+```
+
+> 或者仅仅是：
+
+```css
+.pastoral { color: green }  /* all elements with class~=pastoral */
+```
+
+> 接下来的只对有`class~="pastoral"`的H1元素指定样式：
+
+```css
+H1.pastoral { color: green }  /* H1 elements with class~=pastoral */
+```
+
+> 给定这些规则，下边的第一个H1实例不会又绿色文本，而第二个会是：
+
+```html
+<H1>Not green</H1>
+<H1 class="pastoral">Very green</H1>
+```
+
+接下来的规则匹配了任何`class`属性指定了一个空格分隔的值列表，其中包含了pastoral和marine的任何`P`元素：
+
+```css
+p.pastoral.marine { color: green }
+```
+
+这个规则匹配`class="pastoral blue aqua marine"`，但是不会匹配`class="pastoral blue"`。
+
+### ID选择器
+
