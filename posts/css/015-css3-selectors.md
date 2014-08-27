@@ -624,3 +624,324 @@ _本规范未来的版本可能会介绍`:indeterminate`伪类来应用到那样
 
 #### 结构伪类
 
+选择器介绍结构伪类的概念是为了允许基于位于文档树中的额外信息来选择，但是不能由其他的简单选择器或者关系选择器代表。
+
+独立文本和其他非元素节点当计算在一个元素在其父元素的孩子列表中的位置时不计算在内。当计算在一个元素在其父元素的孩子列表中的位置时，序列数字从1开始。
+
+##### :root伪类
+
+`:root`伪类代表了文档的根元素。在HTML4中，通常就是`HTML`元素。
+
+##### :nth-child()伪类
+
+`:nth-child(an+b)`伪类记法代表了一个元素，在文档树中在其之前有an+b-1个兄弟，n是任何的正整数或者0，且该元素有父元素。a和b的值都是大于0的，这有效的把这个元素的孩子们划分为a元素组（最后的组用剩余的），且选择每一组中的第b个元素。例如，这允许选择器定位在表格中的每一个其他行，且能用于交替循环四个段落文本颜色。a和b的值必须是整数（正的，负的或者0）。一个元素的第一个孩子的次序是1。
+
+另外，`:nth-child()`还可以使用‘odd’和‘even’代为参数。‘odd’和2n+1有同样的意义，‘even’和2n有着同样的意义。
+
+`:nth-child()`参数必须匹配下边的语法，INTEGER匹配[0-9]+标记，其余的标记通过[句法扫描器](http://www.w3.org/TR/selectors/#lex)给定。
+
+```
+nth
+  : S* [ ['-'|'+']? INTEGER? {N} [ S* ['-'|'+'] S* INTEGER ]? |
+         ['-'|'+']? INTEGER | {O}{D}{D} | {E}{V}{E}{N} ] S*
+  ;
+```
+
+> 例子：
+
+```css
+tr:nth-child(2n+1) /* represents every odd row of an HTML table */
+tr:nth-child(odd)  /* same */
+tr:nth-child(2n+0) /* represents every even row of an HTML table */
+tr:nth-child(even) /* same */
+
+/* Alternate paragraph colours in CSS */
+p:nth-child(4n+1) { color: navy; }
+p:nth-child(4n+2) { color: green; }
+p:nth-child(4n+3) { color: maroon; }
+p:nth-child(4n+4) { color: purple; }
+```
+
+当b的值是负的符号时，在表达式中的"+"字符必须移除掉（和用"-"字符代替一样效果，表明b的负值）。
+
+> 例子：
+
+```css
+:nth-child(10n-1)  /* represents the 9th, 19th, 29th, etc, element */
+:nth-child(10n+9)  /* Same */
+:nth-child(10n+-1) /* Syntactically invalid, and would be ignored */
+```
+
+当a等于0，an部分就没有必要包括在内了（除非b部分已经省略了）。当an没有包括在内且b不是负值，b之前的+号也可以省略。在这种情况下，语法简化为：`:nth-child(b)`。
+
+> 例子：
+
+```css
+foo:nth-child(0n+5)   /* represents an element foo that is the 5th child
+                         of its parent element */
+foo:nth-child(5)      /* same */
+```
+
+当a=1或者a=-1的时候，数字可以从规则中省略。
+
+> 例子：
+
+> 因此接下来的选择器是相等的：
+
+```css
+ar:nth-child(1n+0)   /* represents all bar elements, specificity (0,1,1) */
+bar:nth-child(n+0)    /* same */
+bar:nth-child(n)      /* same */
+bar                   /* same but lower specificity (0,0,1) */
+```
+
+如果b=0，那么每一个第a个元素都是被选中的。在这样的情况向，+b（-b）部分可以忽略除非a部分已经忽略了。
+
+> 例子：
+
+```css
+tr:nth-child(2n+0) /* represents every even row of an HTML table */
+tr:nth-child(2n) /* same */
+```
+
+在"("之后，")"之前是允许出现空白的，且在分隔an和b部分（都有）的"+"或者"-"的两边也是允许出现空白的。
+
+> 有效空白例子：
+
+```css
+:nth-child( 3n + 1 )
+:nth-child( +3n - 2 )
+:nth-child( -n+ 6)
+:nth-child( +6 )
+```
+
+> 无效空白例子：
+
+```css
+:nth-child(3 n)
+:nth-child(+ 2n)
+:nth-child(+ 2)
+```
+
+如果a和b都等于0，伪类就不代表文档树中的元素。
+
+a可以是负值，但是an+b只能是正值，对于n≥0，可能会代表在文档树中的元素。
+
+> 例子：
+
+```css
+html|tr:nth-child(-n+6)  /* represents the 6 first rows of XHTML tables */
+```
+
+##### :nth-last-child()伪类
+
+`:nth-last-child(an+b)`伪类记法代表了一个元素，在文档树中在其之后具有an+b-1个兄弟。n可以是任何的正整数或者0，该元素必须得有一个父元素。参见`:nth-child()`伪类部分的语法参数。他也支持‘even’和‘odd’参数。
+
+> 例子：
+
+```css
+tr:nth-last-child(-n+2)    /* represents the two last rows of an HTML table */
+
+foo:nth-last-child(odd)    /* represents all odd foo elements in their parent element,
+                              counting from the last one */
+```
+
+##### :nth-of-type()伪类
+
+`:nth-of-type(an+b)`伪类记法代表了一个元素在文档树中在其之前有an+b-1个和其有相同元素名的兄弟，n的值可以是任何的0或者正整数，该元素必须有父元素。参见`:nth-child()`伪类部分的语法参数。他也支持‘even’和‘odd’参数。
+
+> CSS例子：
+
+> 这允许作者交替浮动图片的位置：
+
+```css
+img:nth-of-type(2n+1) { float: right; }
+img:nth-of-type(2n) { float: left; }
+```
+
+##### :nth-last-of-type()伪类
+
+`:nth-last-of-type(an+b)`伪类记法代表了一个元素在文档树中在其之后有an+b-1个和其有相同元素名的兄弟，n的值可以是任何的0或者正整数，该元素必须有父元素。参见`:nth-child()`伪类部分的语法参数。他也支持‘even’和‘odd’参数。
+
+> 例子：
+
+> 为了代表一个XHTML中body的所有的h2子元素，但是除了第一个和最后一个，可以使用下边的选择器：
+
+```css
+body > h2:nth-of-type(n+2):nth-last-of-type(n+2)
+```
+
+> 在这种情况下，也可以使用:not()，尽管这个选择器最终一样长的：
+
+```css
+body > h2:not(:first-of-type):not(:last-of-type)
+```
+
+##### :first-child伪类
+
+和`:nth-child(1)`一样。`:first-child`伪类代表了一个元素是一些其他元素的第一个孩子。
+
+> 例子：
+
+> 接下来的选择器代表了一个p元素，他是div元素的第一个孩子：
+
+```css
+div > p:first-child
+```
+
+> 这个选择器能代表在如下片段中div内部的p：
+
+```html
+<p> The last P before the note.</p>
+<div class="note">
+   <p> The first P inside the note.</p>
+</div>
+```
+
+> 但是不能代表如下片段中的第二个p：
+
+```html
+<p> The last P before the note.</p>
+<div class="note">
+   <h2> Note </h2>
+   <p> The first P inside the note.</p>
+</div>
+```
+
+> 下边的两个选择器通常是相等的：
+
+```css
+* > a:first-child /* a is first child of any element */
+a:first-child /* Same (assuming a is not the root element) */
+```
+
+##### :last-child伪类
+
+和`:nth-last-child(1)`一样。`:last-child`伪类代表了一个元素是一些其他元素的最后一个孩子。
+
+> 例子：
+
+> 接下来的选择器代表了一个列表项li，他是有序列表ol的最后一个孩子。
+
+```css
+ol > li:last-child
+```
+
+##### :first-of-type伪类
+
+和`:nth-of-type(1)`一样。`:first-of-type`伪类代表了一个元素时他的父元素的孩子列表中的第一个他的类型的兄弟。
+
+> 例子：
+
+> 接下来的选择器代表了一个自定义标题dt在一个自定义列表dl内部，这个dt是他的父元素的孩子列表中的第一个他的类型。
+
+```css
+dl dt:first-of-type
+```
+
+> 对于下边的例子中的前2个dt元素是一个有效的描述，但是对于第三个就不是了：
+
+```html
+<dl>
+ <dt>gigogne</dt>
+ <dd>
+  <dl>
+   <dt>fusée</dt>
+   <dd>multistage rocket</dd>
+   <dt>table</dt>
+   <dd>nest of tables</dd>
+  </dl>
+ </dd>
+</dl>
+```
+
+##### :last-of-type伪类
+
+和`:nth-last-of-type(1)`一样。`:last-of-type`伪类代表了一个元素时他的父元素的孩子列表中的最后一个他的类型的兄弟。
+
+> 例子：
+
+> 接下来的选择器代表了一个表格行tr中的最后一个数据单元格td。
+
+```css
+tr > td:last-of-type
+```
+
+##### :only-child伪类
+
+代表一个元素有父元素，且他的父元素没有其他的子元素。和`:first-child:last-child`或者`:nth-child(1):nth-last-child(1)`一样，但是特殊性较低。
+
+##### :only-of-type伪类
+
+代表了一个元素有父元素，且他的父元素没有其他的和他一样元素名的子元素。和`:first-of-type:last-of-type`或者`:nth-of-type(1):nth-last-of-type(1)`一样，但是特殊性较低。
+
+##### :empty伪类
+
+`:empty`伪类代表了一个元素没有任何孩子。在文档树条目中，只有元素节点和内容节点（例如DOM中文本节点text node，CDATA node以及entity references），如果他们有一个非零长度的数据，那么他们就必须作为影响空来对待；注释，处理指令processing instructions以及其他节点不影响一个元素被认为是空的。
+
+> 例子：
+
+> 对于如下片段，p:empty是一个有效的代表：
+
+```html
+<p></p>
+```
+
+> 对于如下片段，foo:empty不是一个有效的代表：
+
+```html
+<foo>bar</foo>
+<foo><bar>bla</bar></foo>
+<foo>this is not <bar>:empty</bar></foo>
+```
+
+#### 空白Blank
+
+本段落故意留空。（本段可能定义`:contains()`伪类。）
+
+#### 否定:not()伪类
+
+否定伪类,`:not(X)`，是一个函数记法，传入简单选择器（不包括否定伪类本身）作为他的参数。他代表一个元素不是他的参数所代表的。
+
+否定不可以嵌套，`:not(:not(...))`是无效的。注意由于伪元素不是简单选择器，所以他们对于`:not()`不是一个有效的参数。
+
+> 例子：
+
+> 接下来的选择器匹配了在HTML文档中的所有的不是不可用（即可用）的button元素。
+
+```css
+button:not([DISABLED])
+```
+
+> 接下来的选择器代表了除了FOO之外的所有元素。
+
+```css
+*:not(FOO)
+```
+
+> 接下来的选择器组代表了所有的HTML元素除了链接。
+
+```css
+html|*:not(:link):not(:visited)
+```
+
+默认的命名空间声明不会影响否定伪元素的参数除非参数是一个通用选择器或者类型选择器。
+
+> 例子：
+
+> 指定默认命名空间到`"http://example.com/`，接下来的选择器代表了所有的不在那个命名空间中的元素：
+
+```css
+*|*:not(*)
+```
+
+> 接下来的选择器匹配没被悬停的任何元素，不管他的命名空间。特别地，他对于只匹配在默认命名空间中的元素（没有被悬停的）和不匹配规则的不在默认命名空间中的元素（被悬停）是没有啥限制的。
+
+```css
+*|*:not(:hover)
+```
+
+_注意：`:not()`伪类允许编写无用的选择器。例如`:not(*|*)`，不会代表任何元素，或者`foo:not(bar)`，他和`foo`是相等的，但是有更高的特殊性。_
+
+## 伪元素
+
