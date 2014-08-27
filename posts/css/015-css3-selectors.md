@@ -945,3 +945,83 @@ _注意：`:not()`伪类允许编写无用的选择器。例如`:not(*|*)`，不
 
 ## 伪元素
 
+伪元素创建了关于超出了那些通过文档语言指定的文档树的抽象。例如，文档语言不会提供机制来访问一个元素内容的第一个字母或者第一行，伪元素允许作者引用另外的难以接近的信息。伪元素也可以提供作者一种方式来引用在源文档中不存在的内容（例如，`::before`和`::after`伪元素就能生成内容）。
+
+伪元素是在两个冒号（::）之后紧跟着伪元素名字。
+
+`::`记法通过当前文档介绍是为了确立伪类和伪元素之间的区别。为了兼容已存在的样式表，用户代理也必须之前在CSS1和CSS2中介绍的一个冒号记法的伪元素。这种兼容对于在本规范中介绍的新伪元素是不允许的。
+
+每一个选择器只有一个伪元素可以出现，如果他存在，那么他必须出现在这个选择器所代表的匹配元素subjects的简单选择器序列之后。_注意：本规范将来的版本可能会允许每一个选择器有多个伪元素。_
+
+### ::first-line伪元素
+
+`::first-line`伪元素描述了一个元素的格式化后第一行的内容。
+
+> CSS例子：
+
+```css
+p::first-line { text-transform: uppercase }
+```
+
+> 上边的规则意味着“把每一个p元素的第一行的字母全部变为大写”。
+
+> 选择器`p::first-line`不会匹配任何真正的文档元素。他的确匹配一个用户代理遵循的插入在每一个p元素之前的伪元素。
+
+注意第一行的长度取决于因子数目，包括页面宽，font尺寸等等。因此一段普通的HTML段落像这样：
+
+```html
+<P>This is a somewhat long HTML 
+paragraph that will be broken into several 
+lines. The first line will be identified
+by a fictional tag sequence. The other lines 
+will be treated as ordinary lines in the 
+paragraph.</P>
+```
+
+行会照如下样子打破：
+
+```
+THIS IS A SOMEWHAT LONG HTML PARAGRAPH THAT
+will be broken into several lines. The first
+line will be identified by a fictional tag 
+sequence. The other lines will be treated as 
+ordinary lines in the paragraph.
+```
+
+这个段落可能会被用户代理“重写”，用来包括为了`::first-line`的_虚构的标记序列_。这个虚构的标记序列帮助展示属性是怎样继承的。
+
+```html
+<P><P::first-line> This is a somewhat long HTML 
+paragraph that </P::first-line> will be broken into several
+lines. The first line will be identified 
+by a fictional tag sequence. The other lines 
+will be treated as ordinary lines in the 
+paragraph.</P>
+```
+
+如果一个伪元素被一个真正的元素打破，渴望的效果也能通过虚构标记序列先闭合然后再重开那个元素来描述。因此，如果我们给之前的段落加一个span元素：
+
+```html
+<P><SPAN class="test"> This is a somewhat long HTML
+paragraph that will be broken into several
+lines.</SPAN> The first line will be identified
+by a fictional tag sequence. The other lines 
+will be treated as ordinary lines in the 
+paragraph.</P>
+```
+
+用户代理能在为了`::first-line`插入虚构标记序列时模仿span的开始和结束标记。
+
+```html
+<P><P::first-line><SPAN class="test"> This is a
+somewhat long HTML
+paragraph that will </SPAN></P::first-line><SPAN class="test"> be
+broken into several
+lines.</SPAN> The first line will be identified
+by a fictional tag sequence. The other lines
+will be treated as ordinary lines in the 
+paragraph.</P>
+```
+
+#### 在CSS中格式化后第一行的定义
+
