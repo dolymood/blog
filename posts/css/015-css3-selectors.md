@@ -1025,3 +1025,37 @@ paragraph.</P>
 
 #### 在CSS中格式化后第一行的定义
 
+在CSS中，`::first-line`伪元素只能当依附到像块容器（例如块盒，inline-block，table-caption或者table-cell）上时才会有效果。
+
+一个元素的格式化后第一行可以出现在一个在相同流（不是由于浮动或者定位而引起在流之外的块级子孙）中的块级子孙的内部。例如，在`<DIV><P>This line...</P></DIV>`中DIV的第一行就是P的第一行（假设P和DIV都是块级的）。
+
+一个table-cell或者inline-block的第一行不能称为一个祖先元素的格式化后第一行。因此，在`<DIV><P STYLE="display: inline-block">Hello<BR>Goodbye</P> etcetera</DIV>`中，DIV格式化后第一行不是行“Hello”。
+
+_注意：在片段`p><br>First...`中的p的第一行不包含任何的字母（假设br在HTML4中是默认样式）。单词“First”不是在格式化后第一行上。_
+
+如果虚拟的`::first-line`伪元素的开始标记是恰好嵌套在最里边，UA应该扮演者围绕着块级元素。（由于CSS1和CSS2在这种情况下都是无记载的，作者不应该依赖这个行为。）例如，如下的虚拟的标记序列
+
+```html
+<DIV>
+  <P>First paragraph</P>
+  <P>Second paragraph</P>
+</DIV>
+```
+
+是
+
+```html
+<DIV>
+  <P><DIV::first-line><P::first-line>First paragraph</P::first-line></DIV::first-line></P>
+  <P><P::first-line>Second paragraph</P::first-line></P>
+</DIV>
+```
+
+`::first-line`伪元素和一个行内级元素很像，但是也有明确的限制条件。接下来的CSS属性应用到`::first-line`伪元素的：font属性，color属性，background属性，‘word-spacing’, ‘letter-spacing’, ‘text-decoration’, ‘vertical-align’, ‘text-transform’, ‘line-height’。UA也可以应用其他的属性。
+
+在CSS继承期间，在第一行的一个子元素部分只能继承自`::first-line`伪元素上的能应用到`::first-line`伪元素上的属性。对于其他属性则是继承自第一行伪元素的非伪元素父级元素。（不在第一行的一个子元素部分往往继承自这个孩子的父元素。）
+
+### ::first-letter伪元素
+
+`::first-letter`伪元素描述了一个元素的第一个的字母，如果他不是在他的行上的其他内容（例如图片或者行内表格）之前。`::first-letter`伪元素可能用于“第一个字大写”和“首字下沉”，他们通常是印刷上的效果。
+
